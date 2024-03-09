@@ -1,0 +1,151 @@
+#VRML_SIM R2023b utf8
+# Describe the functionality of your PROTO here.
+
+PROTO Roomba [
+  field SFVec3f    translation  0 0 0
+  field SFRotation rotation     0 0 1 0
+  field SFString   controller   "<generic>"
+  field SFFloat    wheelMaxVelocity 20
+  field MFNode     children []
+]
+{
+  Robot {
+    translation IS translation
+    rotation IS rotation
+    children [
+      Pose {
+        translation 0 0 0.045
+        children [
+          CadShape {
+            url "../robot.dae"
+          }
+          TouchSensor {
+            name "bumper"
+            boundingObject Mesh {
+              url "../bumper.dae"
+            }
+          }
+           Accelerometer {
+            name "accel"
+          }
+          Gyro {
+            name "gyro"
+          }
+          GPS {
+            name "gps"
+          }
+          InertialUnit {
+            name "imu"
+          }
+        ]
+      }
+      DEF LEFTWHEEL HingeJoint {
+        jointParameters HingeJointParameters {
+          axis 0 1 0
+          anchor 0 0.1 0.015
+        }
+        device [
+          RotationalMotor {
+            name "left wheel motor"
+            maxVelocity IS wheelMaxVelocity
+          }
+          PositionSensor {
+            name "left wheel sensor"
+            resolution 0.00628  # (2 * pi) / 1000
+          }
+        ]
+        endPoint Solid {
+          translation 0 0.1 0.015
+          rotation 1 0 0 1.5708
+          children [
+            DEF WHEEL Shape {
+              appearance PBRAppearance {
+                baseColor 0.305882 0.898039 0.25098
+                roughness 1
+                metalness 0
+              }
+              geometry Cylinder {
+                height 0.0075
+                radius 0.015
+                subdivision 24
+              }
+            }
+          ]
+          boundingObject USE WHEEL
+          contactMaterial "wheel"
+          physics Physics {
+          }
+        }
+      }
+      DEF RIGHTWHEEL HingeJoint {
+        jointParameters HingeJointParameters {
+          axis 0 1 0
+          anchor 0 -0.1 0.015
+        }
+        device [
+          RotationalMotor {
+            name "right wheel motor"
+            maxVelocity IS wheelMaxVelocity
+          }
+          PositionSensor {
+            name "right wheel sensor"
+            resolution 0.00628  # (2 * pi) / 1000
+          }
+        ]
+        endPoint Solid {
+          translation 0 -0.1 0.015
+          rotation 1 0 0 1.5708
+          children [
+            USE WHEEL
+          ]
+          name "solid(1)"
+          boundingObject USE WHEEL
+          contactMaterial "wheel"
+          physics Physics {
+          }
+        }
+      }
+      Solid {
+        translation 0.127 0 0.015
+        rotation 1 0 0 1.5708
+        children [
+          DEF BALL Shape {
+            appearance PBRAppearance {
+              baseColor 0.898039 0.305882 0.25098
+              roughness 1
+              metalness 0
+            }
+            geometry Sphere {
+              radius 0.015
+              subdivision 1
+            }
+          }
+        ]
+        name "solid(2)"
+        boundingObject USE BALL
+        contactMaterial "slide"
+        physics Physics {
+        }
+      }
+      Group {
+        children IS children
+      }
+    ]
+    boundingObject Pose {
+      translation 0 0 0.045
+      children [
+        Cylinder {
+          height 0.07
+          radius 0.155
+          subdivision 24
+        }
+      ]
+    }
+    physics Physics {
+      density -1
+      mass 2.336
+      centerOfMass 0.0775 0 0
+    }
+    controller IS controller
+  }
+}

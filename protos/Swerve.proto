@@ -1,0 +1,80 @@
+#VRML_SIM R2023b utf8
+
+EXTERNPROTO "../protos/Drive.proto"
+
+PROTO Swerve [
+  field SFVec3f    translation  0 0 0
+  field SFRotation rotation     0 0 1 0
+  field SFString   controller   "<generic>"
+  field SFString   name "Swerve Robot"
+  field SFFloat    axisResolution 0.0062831853071796 # 2 * pi / 1000
+  field SFFloat    wheelResolution 0.0062831853071796 # 2 * pi / 1000
+  field MFNode     children []
+]
+{
+  Robot {
+    translation IS translation
+    rotation IS rotation
+    name IS name
+    children [
+      Pose {
+        translation 0 0 0.15
+        children [
+          Accelerometer {
+            name "accel"
+          }
+          Gyro {
+            name "gyro"
+          }
+          GPS {
+            name "gps"
+          }
+          InertialUnit {
+            name "imu"
+          }
+        ]
+      }
+      Drive {
+        name "front left drive"
+        translation 0.1 0.2 0
+        axisResolution IS axisResolution
+        wheelResolution IS wheelResolution
+      }
+      Drive {
+        name "front right drive"
+        translation 0.1 -0.2 0
+        axisResolution IS axisResolution
+        wheelResolution IS wheelResolution
+      }
+      Drive {
+        name "back left drive"
+        translation -0.1 0.2 0
+        axisResolution IS axisResolution
+        wheelResolution IS wheelResolution
+      }
+      Drive {
+        name "back right drive"
+        translation -0.1 -0.2 0
+        axisResolution IS axisResolution
+        wheelResolution IS wheelResolution
+      }
+      Group {
+        children IS children
+      }
+    ]
+    boundingObject Pose {
+      translation 0 0 0.15
+      children [
+        Box {
+          size 0.3 0.5 0.1
+        }
+      ]
+    }
+    physics Physics {
+      density -1
+      mass 2.336
+      centerOfMass 0.0775 0 0
+    }
+    controller IS controller
+  }
+}
