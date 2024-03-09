@@ -32,6 +32,8 @@ target_include_directories(${UTIL_TARGET} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/in
 
 set_property(TARGET ${UTIL_TARGET} PROPERTY CXX_STANDARD 17)
 
+target_link_libraries(${UTIL_TARGET} PRIVATE spdlog::spdlog)
+
 ## =============================================================================
 ## Controller
 ## -----------------------------------------------------------------------------
