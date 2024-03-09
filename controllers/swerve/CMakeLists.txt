@@ -39,11 +39,14 @@ target_link_libraries(${UTIL_TARGET} PRIVATE spdlog::spdlog)
 ## -----------------------------------------------------------------------------
 
 set(HEADER_LIST
+    Platform.hpp
 )
-list(TRANSFORM HEADER_LIST PREPEND "include/${TARGET}/")
+# list(TRANSFORM HEADER_LIST PREPEND "include/${TARGET}/")
+list(TRANSFORM HEADER_LIST PREPEND "include/")
 
 set(SOURCE_LIST
     main.cpp
+    Platform.cpp
 )
 list(TRANSFORM SOURCE_LIST PREPEND "src/")
 

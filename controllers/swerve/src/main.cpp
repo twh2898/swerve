@@ -4,12 +4,14 @@ using namespace webots;
 
 #include <stdexcept>
 
+#include "Platform.hpp"
 #include "util/Config.hpp"
 #include "util/Profiler.hpp"
 #include "util/Telemetry.hpp"
 #include "util/log.hpp"
 
 using namespace util;
+using namespace swerve;
 
 #define SPEED 5
 #define TIME_STEP 64
@@ -31,38 +33,11 @@ int main() {
     Telemetry tel(config.telemetry.port, config.telemetry.address);
 
     int movementCounter = 10;
+
+    Platform::Ptr platform = make_shared<Platform>();
+    platform->enable(TIME_STEP);
+
     int wheelSpeed, axisSpeed;
-
-    Robot robot;
-
-    auto fra = robot.getMotor("front right drive axis motor");
-    auto fla = robot.getMotor("front left drive axis motor");
-    auto bra = robot.getMotor("back right drive axis motor");
-    auto bla = robot.getMotor("back left drive axis motor");
-
-    auto frw = robot.getMotor("front right drive wheel motor");
-    auto flw = robot.getMotor("front left drive wheel motor");
-    auto brw = robot.getMotor("back right drive wheel motor");
-    auto blw = robot.getMotor("back left drive wheel motor");
-
-    fra->setPosition(INFINITY);
-    fla->setPosition(INFINITY);
-    bra->setPosition(INFINITY);
-    bla->setPosition(INFINITY);
-    frw->setPosition(INFINITY);
-    flw->setPosition(INFINITY);
-    brw->setPosition(INFINITY);
-    blw->setPosition(INFINITY);
-
-    fra->setVelocity(0.0);
-    fla->setVelocity(0.0);
-    bra->setVelocity(0.0);
-    bla->setVelocity(0.0);
-
-    frw->setVelocity(0.0);
-    flw->setVelocity(0.0);
-    brw->setVelocity(0.0);
-    blw->setVelocity(0.0);
 
     Logging::Main->info("Initialization complete");
 
@@ -74,7 +49,7 @@ int main() {
     R_DEF_CLOCK(prof, clkTelem, "telemetry");
 
     clkSim->reset();
-    while (robot.step(TIME_STEP) != -1) {
+    while (platform->robot.step(TIME_STEP) != -1) {
         clkSim->tick();
 
         if (movementCounter == 0) {
@@ -87,17 +62,18 @@ int main() {
             movementCounter--;
         }
 
-        fra->setVelocity(axisSpeed);
-        fla->setVelocity(axisSpeed);
-        bra->setVelocity(axisSpeed);
-        bla->setVelocity(axisSpeed);
+        platform->frontRight->axisMotor->setVelocity(axisSpeed);
+        platform->frontLeft->axisMotor->setVelocity(axisSpeed);
+        platform->backRight->axisMotor->setVelocity(axisSpeed);
+        platform->backLeft->axisMotor->setVelocity(axisSpeed);
 
-        frw->setVelocity(wheelSpeed);
-        flw->setVelocity(wheelSpeed);
-        brw->setVelocity(wheelSpeed);
-        blw->setVelocity(wheelSpeed);
+        platform->frontRight->wheelMotor->setVelocity(wheelSpeed);
+        platform->frontLeft->wheelMotor->setVelocity(wheelSpeed);
+        platform->backRight->wheelMotor->setVelocity(wheelSpeed);
+        platform->backLeft->wheelMotor->setVelocity(wheelSpeed);
 
         R_PROFILE_STEP(clkTelem, {
+            tel.send(platform.get());
             // tel.send(&planner);
         });
 
