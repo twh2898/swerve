@@ -20,12 +20,6 @@ PROTO Swerve [
       Pose {
         translation 0 0 0.15
         children [
-          Accelerometer {
-            name "accel"
-          }
-          Gyro {
-            name "gyro"
-          }
           GPS {
             name "gps"
           }
