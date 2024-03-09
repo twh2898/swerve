@@ -2,15 +2,34 @@
 #include <webots/Robot.hpp>
 using namespace webots;
 
-#include <iostream>
-#include <memory>
-#include <vector>
-using namespace std;
+#include <stdexcept>
+
+#include "util/Config.hpp"
+#include "util/Profiler.hpp"
+#include "util/Telemetry.hpp"
+#include "util/log.hpp"
+
+using namespace util;
 
 #define SPEED 5
 #define TIME_STEP 64
 
 int main() {
+    Logging::init_logging(spdlog::level::trace);
+    Logging::Main->debug("Logging enabled");
+
+    Config config;
+    try {
+        config = Config::fromFile("config.json");
+    }
+    catch (ConfigLoadException & e) {
+        auto what = e.what();
+        Logging::Main->error("Failed to load config: {}", what);
+        return EXIT_FAILURE;
+    }
+
+    Telemetry tel(config.telemetry.port, config.telemetry.address);
+
     int movementCounter = 10;
     int wheelSpeed, axisSpeed;
 
@@ -45,7 +64,19 @@ int main() {
     brw->setVelocity(0.0);
     blw->setVelocity(0.0);
 
+    Logging::Main->info("Initialization complete");
+
+    Profiler prof;
+
+    R_DEF_CLOCK(prof, clkMain, "main");
+    R_DEF_CLOCK(prof, clkSim, "simulation");
+    R_DEF_CLOCK(prof, clkPlan, "planner");
+    R_DEF_CLOCK(prof, clkTelem, "telemetry");
+
+    clkSim->reset();
     while (robot.step(TIME_STEP) != -1) {
+        clkSim->tick();
+
         if (movementCounter == 0) {
             // axisSpeed = 0;
             wheelSpeed = SPEED;
@@ -65,6 +96,19 @@ int main() {
         flw->setVelocity(wheelSpeed);
         brw->setVelocity(wheelSpeed);
         blw->setVelocity(wheelSpeed);
+
+        R_PROFILE_STEP(clkTelem, {
+            // tel.send(&planner);
+        });
+
+        clkMain->tick();
+
+        json profile {
+            {"profile", prof.getTelemetry()},
+        };
+        tel.send(profile);
+
+        clkSim->reset();
     }
 
     return 0;

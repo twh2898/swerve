@@ -166,5 +166,5 @@ RectangleArena {
   floorSize 3 3
 }
 Swerve {
-  controller "swerve"
+  controller "<extern>"
 }
