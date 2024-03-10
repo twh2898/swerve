@@ -4,6 +4,15 @@
 
 #include "util/log.hpp"
 
+#define TEST_KEY(data, key)    \
+    if (!(data).contains(key)) \
+        throw ConfigLoadException("Missing key: " key);
+
+#define TEST_SUB_KEY(data, prefix, key) \
+    if (!(data).contains(key))          \
+        throw ConfigLoadException("Missing key: " prefix "." key);
+
+
 namespace util {
     using std::fstream;
 
@@ -15,56 +24,39 @@ namespace util {
         auto ds = data.dump();
         Logging::Config->debug("Config data is {}", ds);
 
-        if (!data.contains("sim"))
-            throw ConfigLoadException("Missing key: sim");
+        TEST_KEY(data, "sim")
         auto simConfig = data["sim"];
 
-        if (!simConfig.contains("flip"))
-            throw ConfigLoadException("Missing key: sim.flip");
-
-        if (!simConfig.contains("stop"))
-            throw ConfigLoadException("Missing key: sim.stop");
-
-        if (!simConfig.contains("step"))
-            throw ConfigLoadException("Missing key: sim.step");
+        TEST_SUB_KEY(simConfig, "sim", "flip")
+        TEST_SUB_KEY(simConfig, "sim", "stop")
+        TEST_SUB_KEY(simConfig, "sim", "step")
 
         SimConfig sim {
-            flip: simConfig["flip"],
-            stop: simConfig["stop"],
-            step: simConfig["step"],
+            flip : simConfig["flip"],
+            stop : simConfig["stop"],
+            step : simConfig["step"],
         };
 
-        if (!data.contains("telemetry"))
-            throw ConfigLoadException("Missing key: telemetry");
+        TEST_KEY(data, "telemetry")
         auto telemConfig = data["telemetry"];
 
-        if (!telemConfig.contains("port"))
-            throw ConfigLoadException("Missing key: telemetry.port");
-
-        if (!telemConfig.contains("address"))
-            throw ConfigLoadException("Missing key: telemetry.address");
+        TEST_SUB_KEY(telemConfig, "telemetry", "port")
+        TEST_SUB_KEY(telemConfig, "telemetry", "address")
 
         TelemetryConfig telem {
             port : telemConfig["port"],
             address : telemConfig["address"],
         };
 
-        if (!data.contains("swerve"))
-            throw ConfigLoadException("Missing key: swerve");
+        TEST_KEY(data, "swerve")
         auto swerveConfig = data["swerve"];
 
-        if (!swerveConfig.contains("pid"))
-            throw ConfigLoadException("Missing key: swerve.pid");
+        TEST_SUB_KEY(swerveConfig, "swerve", "pid")
         auto pidConfig = swerveConfig["pid"];
 
-        if (!pidConfig.contains("p"))
-            throw ConfigLoadException("Missing key: swerve.pid.p");
-
-        if (!pidConfig.contains("i"))
-            throw ConfigLoadException("Missing key: swerve.pid.i");
-
-        if (!pidConfig.contains("d"))
-            throw ConfigLoadException("Missing key: swerve.pid.d");
+        TEST_SUB_KEY(pidConfig, "swerve.pid", "p")
+        TEST_SUB_KEY(pidConfig, "swerve.pid", "i")
+        TEST_SUB_KEY(pidConfig, "swerve.pid", "d")
 
         PIDConfig pid {
             p : pidConfig["p"],
@@ -78,7 +70,7 @@ namespace util {
 
         return Config {
             data : data,
-            sim: sim,
+            sim : sim,
             telemetry : telem,
             swerve : swerve,
         };
