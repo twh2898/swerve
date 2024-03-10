@@ -1,17 +1,18 @@
 {
+    "sim": {
+        "flip": 2.0,
+        "stop": -1,
+        "step": -1
+    },
     "telemetry": {
         "port": 9870,
         "address": "0.0.0.0"
     },
-    "pid": {
-        "p": 7,
-        "i": 0.01,
-        "d": 0.1,
-        "speed": 10
-    },
-    "tuneMode": false,
-    "target": {
-        "heading": 1,
-        "size": 0.01
+    "swerve": {
+        "pid": {
+            "p": 100,
+            "i": 0,
+            "d": 0
+        }
     }
 }

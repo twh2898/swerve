@@ -1,74 +1,70 @@
-#include "Platform.hpp"
+#include "swerve/base/Platform.hpp"
 
 namespace swerve {
     using std::make_shared;
 
-    SwerveDrive::SwerveDrive(Motor * axisMotor,
-                             Motor * wheelMotor,
-                             PositionSensor * axisEncoder,
-                             PositionSensor * wheelEncoder)
-        : axisMotor(axisMotor),
-          wheelMotor(wheelMotor),
-          axisEncoder(axisEncoder),
-          wheelEncoder(wheelEncoder) {
+    SwerveDrive::SwerveDrive(webots::Motor * axisMotor,
+                             webots::Motor * wheelMotor,
+                             webots::PositionSensor * axisEncoder,
+                             PID & pid)
+        : SwerveDrive(make_shared<ServoMotor>(axisMotor, axisEncoder, pid),
+                      make_shared<DriveMotor>(wheelMotor)) {}
 
-        axisMotor->setPosition(INFINITY);
-        wheelMotor->setPosition(INFINITY);
-
-        axisMotor->setVelocity(0.0);
-        wheelMotor->setVelocity(0.0);
-    }
+    SwerveDrive::SwerveDrive(const ServoMotor::Ptr & axis,
+                             const DriveMotor::Ptr & wheel)
+        : axis(axis), wheel(wheel) {}
 
     void SwerveDrive::enable(int samplingPeriod) {
-        axisEncoder->enable(samplingPeriod);
-        wheelEncoder->enable(samplingPeriod);
+        axis->enable(samplingPeriod);
     }
 
     void SwerveDrive::disable() {
-        axisEncoder->disable();
-        wheelEncoder->disable();
+        axis->disable();
+    }
+
+    void SwerveDrive::update(double dt) {
+        axis->update(dt);
     }
 
     json SwerveDrive::getTelemetry() const {
         return json {
-            {"axis",
-             {
-                 {"velocity", axisMotor->getVelocity()},
-                 {"position", axisEncoder->getValue()},
-             }},
-            {"wheel",
-             {
-                 {"velocity", wheelMotor->getVelocity()},
-                 {"position", wheelEncoder->getValue()},
-             }},
+            {"axis", axis->getTelemetry()},
+            {"wheel", wheel->getTelemetry()},
         };
-    }
-
-    SwerveDrive::Ptr SwerveDrive::fromRobot(Robot & robot,
-                                            const string & driveName) {
-        auto * axisMotor = robot.getMotor(driveName + " axis motor");
-        auto * wheelMotor = robot.getMotor(driveName + " wheel motor");
-        auto * axisEncoder = robot.getPositionSensor(driveName + " axis sensor");
-        auto * wheelEncoder = robot.getPositionSensor(driveName + " wheel sensor");
-        return make_shared<SwerveDrive>(axisMotor, wheelMotor, axisEncoder,
-                                        wheelEncoder);
     }
 }
 
 namespace swerve {
-    Platform::Platform() : robot(), lastStep(0.0) {
+    static SwerveDrive::Ptr driveFromRobot(webots::Robot & robot,
+                                            const string & driveName,
+                                            PID & pid) {
+        auto * axisMotor = robot.getMotor(driveName + " axis motor");
+        auto * wheelMotor = robot.getMotor(driveName + " wheel motor");
+        auto * axisEncoder = robot.getPositionSensor(driveName + " axis sensor");
+        return make_shared<SwerveDrive>(axisMotor, wheelMotor, axisEncoder, pid);
+    }
+
+    Platform::Platform(PID & swervePID) : robot(), lastStep(0.0) {
         gps = robot.getGPS("gps");
         imu = robot.getInertialUnit("imu");
 
-        frontRight = SwerveDrive::fromRobot(robot, "front right drive");
-        frontLeft = SwerveDrive::fromRobot(robot, "front left drive");
-        backRight = SwerveDrive::fromRobot(robot, "back right drive");
-        backLeft = SwerveDrive::fromRobot(robot, "back left drive");
+        frontRight = driveFromRobot(robot, "front right drive", swervePID);
+        frontLeft = driveFromRobot(robot, "front left drive", swervePID);
+        backRight = driveFromRobot(robot, "back right drive", swervePID);
+        backLeft = driveFromRobot(robot, "back left drive", swervePID);
     }
 
     int Platform::step(int duration) {
         lastStep = duration;
-        return robot.step(duration);
+        int res = robot.step(duration);
+        double dt = duration / 1000.0;
+        if (res != -1) {
+            frontRight->update(dt);
+            frontLeft->update(dt);
+            backRight->update(dt);
+            backLeft->update(dt);
+        }
+        return res;
     }
 
     int Platform::getSamplingPeriod() const {

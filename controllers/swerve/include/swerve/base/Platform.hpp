@@ -8,37 +8,38 @@
 #include <webots/PositionSensor.hpp>
 #include <webots/Robot.hpp>
 
+#include "Motor.hpp"
+#include "util/PID.hpp"
 #include "util/Telemetry.hpp"
 
 namespace swerve {
-    using namespace webots;
     using std::string;
     using std::shared_ptr;
     using util::TelemetrySender;
+    using util::PID;
     using json = util::json;
 
     struct SwerveDrive : public TelemetrySender {
         using Ptr = shared_ptr<SwerveDrive>;
         using ConstPtr = const shared_ptr<SwerveDrive>;
 
-        Motor * axisMotor;
-        Motor * wheelMotor;
+        ServoMotor::Ptr axis;
+        DriveMotor::Ptr wheel;
 
-        PositionSensor * axisEncoder;
-        PositionSensor * wheelEncoder;
+        SwerveDrive(webots::Motor * axisMotor,
+                    webots::Motor * wheelMotor,
+                    webots::PositionSensor * axisEncoder,
+                    PID & pid);
 
-        SwerveDrive(Motor * axisMotor,
-                    Motor * wheelMotor,
-                    PositionSensor * axisEncoder,
-                    PositionSensor * wheelEncoder);
+        SwerveDrive(const ServoMotor::Ptr & axis, const DriveMotor::Ptr & wheel);
 
         void enable(int samplingPeriod);
 
         void disable();
 
-        json getTelemetry() const override;
+        void update(double dt);
 
-        static Ptr fromRobot(Robot & robot, const string & driveName);
+        json getTelemetry() const override;
     };
 
     class Platform : public TelemetrySender {
@@ -49,16 +50,16 @@ namespace swerve {
         using ConstPtr = const shared_ptr<Platform>;
 
     public:
-        Robot robot;
+        webots::Robot robot;
         SwerveDrive::Ptr frontRight;
         SwerveDrive::Ptr frontLeft;
         SwerveDrive::Ptr backRight;
         SwerveDrive::Ptr backLeft;
-        GPS * gps;
-        InertialUnit * imu;
+        webots::GPS * gps;
+        webots::InertialUnit * imu;
 
     public:
-        Platform();
+        Platform(PID & swervePID);
 
         int step(int duration);
 
