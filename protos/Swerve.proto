@@ -9,6 +9,8 @@ PROTO Swerve [
   field SFString   name "Swerve Robot"
   field SFFloat    axisResolution 0.0062831853071796 # 2 * pi / 1000
   field SFFloat    wheelResolution 0.0062831853071796 # 2 * pi / 1000
+  field SFFloat    axisMaxVelocity 5
+  field SFFloat    wheelMaxVelocity 20
   field MFNode     children []
 ]
 {
@@ -33,24 +35,32 @@ PROTO Swerve [
         translation 0.1 0.2 0
         axisResolution IS axisResolution
         wheelResolution IS wheelResolution
+        axisMaxVelocity IS axisMaxVelocity
+        wheelMaxVelocity IS wheelMaxVelocity
       }
       Drive {
         name "front right drive"
         translation 0.1 -0.2 0
         axisResolution IS axisResolution
         wheelResolution IS wheelResolution
+        axisMaxVelocity IS axisMaxVelocity
+        wheelMaxVelocity IS wheelMaxVelocity
       }
       Drive {
         name "back left drive"
         translation -0.1 0.2 0
         axisResolution IS axisResolution
         wheelResolution IS wheelResolution
+        axisMaxVelocity IS axisMaxVelocity
+        wheelMaxVelocity IS wheelMaxVelocity
       }
       Drive {
         name "back right drive"
         translation -0.1 -0.2 0
         axisResolution IS axisResolution
         wheelResolution IS wheelResolution
+        axisMaxVelocity IS axisMaxVelocity
+        wheelMaxVelocity IS wheelMaxVelocity
       }
       Group {
         children IS children
