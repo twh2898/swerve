@@ -15,6 +15,25 @@ namespace util {
         auto ds = data.dump();
         Logging::Config->debug("Config data is {}", ds);
 
+        if (!data.contains("sim"))
+            throw ConfigLoadException("Missing key: sim");
+        auto simConfig = data["sim"];
+
+        if (!simConfig.contains("flip"))
+            throw ConfigLoadException("Missing key: sim.flip");
+
+        if (!simConfig.contains("stop"))
+            throw ConfigLoadException("Missing key: sim.stop");
+
+        if (!simConfig.contains("step"))
+            throw ConfigLoadException("Missing key: sim.step");
+
+        SimConfig sim {
+            flip: simConfig["flip"],
+            stop: simConfig["stop"],
+            step: simConfig["step"],
+        };
+
         if (!data.contains("telemetry"))
             throw ConfigLoadException("Missing key: telemetry");
         auto telemConfig = data["telemetry"];
@@ -30,54 +49,38 @@ namespace util {
             address : telemConfig["address"],
         };
 
-        if (!data.contains("pid"))
-            throw ConfigLoadException("Missing key: pid");
-        auto pidConfig = data["pid"];
+        if (!data.contains("swerve"))
+            throw ConfigLoadException("Missing key: swerve");
+        auto swerveConfig = data["swerve"];
+
+        if (!swerveConfig.contains("pid"))
+            throw ConfigLoadException("Missing key: swerve.pid");
+        auto pidConfig = swerveConfig["pid"];
 
         if (!pidConfig.contains("p"))
-            throw ConfigLoadException("Missing key: pid.p");
+            throw ConfigLoadException("Missing key: swerve.pid.p");
 
         if (!pidConfig.contains("i"))
-            throw ConfigLoadException("Missing key: pid.i");
+            throw ConfigLoadException("Missing key: swerve.pid.i");
 
         if (!pidConfig.contains("d"))
-            throw ConfigLoadException("Missing key: pid.d");
-
-        if (!pidConfig.contains("speed"))
-            throw ConfigLoadException("Missing key: pid.speed");
+            throw ConfigLoadException("Missing key: swerve.pid.d");
 
         PIDConfig pid {
             p : pidConfig["p"],
             i : pidConfig["i"],
             d : pidConfig["d"],
-            speed : pidConfig["speed"],
         };
 
-        if (!data.contains("tuneMode"))
-            throw ConfigLoadException("Missing key: tuneMode");
-        bool tuneMode = data["tuneMode"];
-
-        if (!data.contains("target"))
-            throw ConfigLoadException("Missing key: target");
-        auto targetConfig = data["target"];
-
-        if (!targetConfig.contains("heading"))
-            throw ConfigLoadException("Missing key: target.heading");
-
-        if (!targetConfig.contains("size"))
-            throw ConfigLoadException("Missing key: target.size");
-
-        TargetConfig target {
-            heading : targetConfig["heading"],
-            size : targetConfig["size"],
+        SwerveConfig swerve {
+            pid : pid,
         };
 
         return Config {
             data : data,
+            sim: sim,
             telemetry : telem,
-            pid : pid,
-            tuneMode : tuneMode,
-            target : target,
+            swerve : swerve,
         };
     }
 }

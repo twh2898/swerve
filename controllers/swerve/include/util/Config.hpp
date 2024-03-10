@@ -17,6 +17,12 @@ namespace util {
         using std::runtime_error::runtime_error;
     };
 
+    struct SimConfig {
+        double flip;
+        double stop;
+        int step;
+    };
+
     struct TelemetryConfig {
         int port;
         string address;
@@ -26,21 +32,19 @@ namespace util {
         double p;
         double i;
         double d;
-        double speed;
     };
 
-    struct TargetConfig {
-        double heading;
-        double size;
+    struct SwerveConfig {
+        PIDConfig pid;
     };
 
     struct Config {
         json data;
 
+        SimConfig sim;
+
         TelemetryConfig telemetry;
-        PIDConfig pid;
-        bool tuneMode;
-        TargetConfig target;
+        SwerveConfig swerve;
 
         static Config fromFile(const string & file);
     };
