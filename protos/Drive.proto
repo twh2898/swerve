@@ -71,6 +71,7 @@ PROTO Drive [
                   }
                   contactMaterial IS wheelContactMaterial
                   physics Physics {
+                    density 1410
                   }
                 }
               }
@@ -84,6 +85,7 @@ PROTO Drive [
             ]
           }
           physics Physics {
+            density 2700
           }
         }
       }
