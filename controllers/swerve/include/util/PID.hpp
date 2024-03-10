@@ -37,6 +37,26 @@ namespace util {
         PID(double Kp, double Ki, double Kd);
 
         /**
+         * Default copy constructor.
+         */
+        PID(const PID & other) = default;
+
+        /**
+         * Default move constructor.
+         */
+        PID(PID && other) = default;
+
+        /**
+         * Default copy assign operator.
+         */
+        PID & operator=(const PID & other) = default;
+
+        /**
+         * Default move assign operator.
+         */
+        PID & operator=(PID && other) = default;
+
+        /**
          * Reset the previousError and integral to 0.
          */
         void reset();
