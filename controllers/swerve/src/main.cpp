@@ -1,3 +1,4 @@
+#include <webots/LED.hpp>
 #include <webots/Motor.hpp>
 #include <webots/Robot.hpp>
 using namespace webots;
@@ -27,7 +28,6 @@ int main() {
         return EXIT_FAILURE;
     }
 
-
     Telemetry tel(config.telemetry.port, config.telemetry.address);
 
     PID swervePID(config.swerve.pid.p, config.swerve.pid.i, config.swerve.pid.d);
@@ -49,6 +49,9 @@ int main() {
     R_DEF_CLOCK(prof, clkPlan, "planner");
     R_DEF_CLOCK(prof, clkTelem, "telemetry");
 
+    // LED led("led1");
+    // led.set(0);
+
     clkSim->reset();
     while (platform->step(time_step) != -1) {
         if (config.sim.stop > 0 && platform->robot.getTime() >= config.sim.stop)
@@ -59,6 +62,7 @@ int main() {
         if (platform->robot.getTime() >= config.sim.flip) {
             // axisTarget = 1;
             wheelSpeed = 5;
+            // led.set(1);
         }
         else {
             // axisSpeed = SPEED / 5;

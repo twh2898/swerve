@@ -1,0 +1,56 @@
+#VRML_SIM R2023b utf8
+# tags: static
+
+PROTO Caster [
+  field SFVec3f    translation  0 0 0
+  field SFRotation rotation     0 0 1 0
+  field SFString   wheelContactMaterial "wheel"
+]
+{
+  Pose {
+    translation IS translation
+    rotation IS rotation
+    children [
+      HingeJoint {
+        jointParameters HingeJointParameters {
+          axis 0 0 1
+        }
+        endPoint Solid {
+          translation 0 0.0381 -0.06985
+          children [
+              CadShape {
+                url "model/frame.dae"
+              }
+              HingeJoint {
+                jointParameters HingeJointParameters {
+                }
+                endPoint Solid {
+                  children [
+                    CadShape {
+                      url "model/wheel.dae"
+                    }
+                  ]
+                  boundingObject Pose {
+                    rotation 0 1 0 %{= math.pi / 2 }%
+                    children [
+                      Cylinder {
+                        height 0.0508
+                        radius 0.0508
+                        subdivision 24
+                      }
+                    ]
+                  }
+                  contactMaterial IS wheelContactMaterial
+                  physics Physics {
+                    density 1410
+                  }
+                }
+              }
+          ]
+          physics Physics {
+          }
+        }
+      }
+    ]
+  }
+}

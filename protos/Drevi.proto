@@ -1,7 +1,7 @@
 #VRML_SIM R2023b utf8
 # tags: static
 
-PROTO Drive [
+PROTO Drevi [
   field SFVec3f    translation  0 0 0
   field SFRotation rotation     0 0 1 0
   field SFString   name   "drive"
@@ -55,7 +55,7 @@ PROTO Drive [
                 endPoint Solid {
                   children [
                     CadShape {
-                      url "../swerve wheel.dae"
+                      url "../wheel.dae"
                     }
                   ]
                   boundingObject Pose {

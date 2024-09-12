@@ -1,6 +1,7 @@
 #VRML_SIM R2023b utf8
 
-EXTERNPROTO "../protos/Drive.proto"
+EXTERNPROTO "../protos/drive/Drive.proto"
+EXTERNPROTO "../protos/caster/Caster.proto"
 
 PROTO Swerve [
   field SFVec3f    translation  0 0 0
@@ -48,7 +49,7 @@ PROTO Swerve [
       }
       Drive {
         name "back left drive"
-        translation -0.1 0.2 0
+        translation -0.1 0.2 0.1
         axisResolution IS axisResolution
         wheelResolution IS wheelResolution
         axisMaxVelocity IS axisMaxVelocity
@@ -56,11 +57,14 @@ PROTO Swerve [
       }
       Drive {
         name "back right drive"
-        translation -0.1 -0.2 0
+        translation -0.1 -0.2 0.1
         axisResolution IS axisResolution
         wheelResolution IS wheelResolution
         axisMaxVelocity IS axisMaxVelocity
         wheelMaxVelocity IS wheelMaxVelocity
+      }
+      Caster {
+        translation -0.2 0 0
       }
       Group {
         children IS children

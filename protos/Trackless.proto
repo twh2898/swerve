@@ -1,0 +1,138 @@
+#VRML_SIM R2023b utf8
+
+EXTERNPROTO "../protos/Drive.proto"
+EXTERNPROTO "../protos/Caster.proto"
+
+PROTO Trackless [
+  field SFVec3f    translation  0 0 0
+  field SFRotation rotation     0 0 1 0
+  field SFString   controller   "<generic>"
+  field SFString   name "Trackless Robot"
+  field SFFloat    axisResolution 0.0062831853071796 # 2 * pi / 1000
+  field SFFloat    wheelResolution 0.0062831853071796 # 2 * pi / 1000
+  field SFFloat    axisMaxVelocity 5
+  field SFFloat    wheelMaxVelocity 20
+  field MFNode     children []
+]
+{
+  Robot {
+    translation IS translation
+    rotation IS rotation
+    name IS name
+    children [
+      Pose {
+        translation 0 0 0.15
+        children [
+          GPS {
+            name "gps"
+          }
+          InertialUnit {
+            name "imu"
+          }
+        ]
+      }
+      LED {
+        translation 0.2 2 0.31
+        color [ 1 1 0 ]
+        name "led1"
+        children [
+          Group {
+            children [
+              Shape {
+                appearance PBRAppearance {
+                  baseColor 0.3 0.3 0
+                  roughness 1
+                  metalness 0
+                }
+                geometry Sphere {
+                  radius 0.02
+                }
+              }
+              PointLight {
+                attenuation 0 0 12.56
+                castShadows TRUE
+                intensity 0.1
+              }
+            ]
+          }
+        ]
+      }
+      LED {
+        translation 0.1 2 0.31
+        color [ 0 1 0 ]
+        name "led2"
+        children [
+          Group {
+            children [
+              Shape {
+                appearance PBRAppearance {
+                  baseColor 0 0.3 0
+                  roughness 1
+                  metalness 0
+                }
+                geometry Sphere {
+                  radius 0.02
+                }
+              }
+              PointLight {
+                attenuation 0 0 12.56
+                castShadows TRUE
+                intensity 0.1
+              }
+            ]
+          }
+        ]
+      }
+      Drive {
+        name "front left drive"
+        translation 0.1 0.2 0
+        axisResolution IS axisResolution
+        wheelResolution IS wheelResolution
+        axisMaxVelocity IS axisMaxVelocity
+        wheelMaxVelocity IS wheelMaxVelocity
+      }
+      Drive {
+        name "front right drive"
+        translation 0.1 -0.2 0
+        axisResolution IS axisResolution
+        wheelResolution IS wheelResolution
+        axisMaxVelocity IS axisMaxVelocity
+        wheelMaxVelocity IS wheelMaxVelocity
+      }
+      Solid {
+        name "Body"
+        children [
+          CadShape {
+            url "../Trackless/export/body.dae"
+          }
+        ]
+        boundingObject Mesh {
+          url "../Trackless/export/body_col.dae"
+        }
+        physics Physics {
+          density -1
+          mass 23.36
+          centerOfMass 0.0775 0 0
+        }
+        contactMaterial "body"
+      }
+      Group {
+        children IS children
+      }
+    ]
+    boundingObject Pose {
+      translation 0 0 0.15
+      children [
+        Box {
+          size 0.3 0.5 0.1
+        }
+      ]
+    }
+    physics Physics {
+      density -1
+      mass 2.336
+      centerOfMass 0.0775 0 0
+    }
+    controller IS controller
+  }
+}

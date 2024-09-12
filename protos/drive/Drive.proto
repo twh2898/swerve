@@ -1,0 +1,94 @@
+#VRML_SIM R2023b utf8
+# tags: static
+
+PROTO Drive [
+  field SFVec3f    translation  0 0 0
+  field SFRotation rotation     0 0 1 0
+  field SFString   name   "drive"
+  field SFFloat    axisResolution -1
+  field SFFloat    wheelResolution -1
+  field SFFloat    axisMaxVelocity 20
+  field SFFloat    wheelMaxVelocity 20
+  field SFString   wheelContactMaterial "wheel"
+]
+{
+  Pose {
+    translation IS translation
+    rotation IS rotation
+    children [
+      Solid {
+        name IS name
+        translation 0 0 -0.10795
+        children [
+          CadShape {
+            url "model/mount.dae"
+          }
+          HingeJoint {
+            jointParameters HingeJointParameters {
+              axis 0 0 1
+              anchor 0 0 0.1
+            }
+            device [
+              RotationalMotor {
+                name %{= '"' .. fields.name.value .. ' axis motor"' }%
+                maxVelocity IS axisMaxVelocity
+              }
+              PositionSensor {
+                name %{= '"' .. fields.name.value .. ' axis sensor"' }%
+                resolution IS axisResolution
+              }
+            ]
+            endPoint Solid {
+              children [
+                  CadShape {
+                    url "model/frame.dae"
+                  }
+                  HingeJoint {
+                    jointParameters HingeJointParameters {
+                      axis 1 0 0
+                      anchor 0 0 0
+                    }
+                    device [
+                      RotationalMotor {
+                        name %{= '"' .. fields.name.value .. ' wheel motor"' }%
+                        maxVelocity IS wheelMaxVelocity
+                      }
+                      PositionSensor {
+                        name %{= '"' .. fields.name.value .. ' wheel sensor"' }%
+                        resolution IS wheelResolution
+                      }
+                    ]
+                    endPoint Solid {
+                      children [
+                        CadShape {
+                          url "model/wheel.dae"
+                        }
+                      ]
+                      boundingObject Pose {
+                        translation 0 0 0
+                        rotation 0 1 0 %{= math.pi / 2 }%
+                        children [
+                          Cylinder {
+                            height 0.0762
+                            radius 0.0762
+                            subdivision 24
+                          }
+                        ]
+                      }
+                      contactMaterial IS wheelContactMaterial
+                      physics Physics {
+                      }
+                    }
+                  }
+              ]
+              physics Physics {
+              }
+            }
+          }
+        ]
+        physics Physics {
+        }
+      }
+    ]
+  }
+}

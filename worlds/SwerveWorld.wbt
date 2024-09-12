@@ -4,6 +4,9 @@ EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/project
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/backgrounds/protos/TexturedBackgroundLight.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/floors/protos/RectangleArena.proto"
 EXTERNPROTO "../protos/Swerve.proto"
+EXTERNPROTO "../protos/Trackless.proto"
+EXTERNPROTO "../protos/caster/Caster.proto"
+EXTERNPROTO "../protos/drive/Drive.proto"
 
 WorldInfo {
   basicTimeStep 10
@@ -24,9 +27,11 @@ WorldInfo {
 }
 Viewpoint {
   fieldOfView 0.9
-  orientation -0.15256645665323287 -0.43656705192837497 0.8866412383116661 5.532299722477943
-  position -0.5539553366756512 0.4664526508184152 0.2904208618177765
+  orientation -0.12513155965933048 -0.27197848105443817 0.9541330088727379 5.384601822349004
+  position -0.7912883891101029 0.8815471557840965 0.4748143309961365
   near 0.01
+  follow "Swerve Robot"
+  followType "None"
 }
 TexturedBackground {
 }
@@ -35,8 +40,23 @@ Group {
 TexturedBackgroundLight {
 }
 RectangleArena {
-  floorSize 3 3
+  floorSize 30 30
+  floorTileSize 1 1
+  wallHeight 1
+}
+Trackless {
+  translation 0 3.83 0
 }
 Swerve {
-  controller "<extern>"
+  translation 0 0 0.2
+  controller "swerve"
+  children [
+    Drive {
+      translation 0 0.47 0.18
+    }
+    Caster {
+      translation -0.14 0.11 -0.06
+      rotation 0 0 1 1.8326
+    }
+  ]
 }
