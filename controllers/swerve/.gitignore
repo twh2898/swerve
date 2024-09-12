@@ -1,3 +1,4 @@
 swerve
 !include/swerve/
 log.txt
+*.log

@@ -81,7 +81,7 @@ namespace util::Logging {
             vector<spdlog::sink_ptr> sinks;
             sinks.push_back(make_shared<spdlog::sinks::stdout_color_sink_mt>());
             sinks.push_back(
-                make_shared<spdlog::sinks::basic_file_sink_mt>("log.txt"));
+                make_shared<spdlog::sinks::basic_file_sink_mt>("swerve.log"));
             logger =
                 make_shared<spdlog::logger>(subsystem, begin(sinks), end(sinks));
 
