@@ -12,4 +12,5 @@ include_directories(${WEBOTS_HOME}/include/controller/c ${WEBOTS_HOME}/include/c
 
 find_package(spdlog 1.11 REQUIRED)
 
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/controllers/swerve)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/libraries)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/controllers)
