@@ -6,11 +6,13 @@ set(TARGET swerve)
 ## -----------------------------------------------------------------------------
 
 set(HEADER_LIST
+    util/Config.hpp
 )
 # list(TRANSFORM HEADER_LIST PREPEND "include/${TARGET}/")
 list(TRANSFORM HEADER_LIST PREPEND "include/")
 
 set(SOURCE_LIST
+    Config.cpp
     main.cpp
 )
 list(TRANSFORM SOURCE_LIST PREPEND "src/")

@@ -1,7 +1,6 @@
 set(UTIL_TARGET util)
 
 set(UTIL_HEADER_LIST
-    Config.hpp
     log.hpp
     PID.hpp
     Profiler.hpp
@@ -11,7 +10,6 @@ set(UTIL_HEADER_LIST
 list(TRANSFORM UTIL_HEADER_LIST PREPEND "include/${UTIL_TARGET}/")
 
 set(UTIL_SOURCE_LIST
-    Config.cpp
     log.cpp
     PID.cpp
     Profiler.cpp
