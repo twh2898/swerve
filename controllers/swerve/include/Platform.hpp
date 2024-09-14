@@ -8,7 +8,7 @@
 #include <webots/PositionSensor.hpp>
 #include <webots/Robot.hpp>
 
-#include "Motor.hpp"
+#include "base/Motor.hpp"
 #include "util/PID.hpp"
 #include "util/Telemetry.hpp"
 

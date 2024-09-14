@@ -5,7 +5,7 @@ using namespace webots;
 
 #include <stdexcept>
 
-#include "base/Platform.hpp"
+#include "Platform.hpp"
 #include "util/Config.hpp"
 #include "util/Profiler.hpp"
 #include "util/Telemetry.hpp"

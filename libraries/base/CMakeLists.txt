@@ -2,13 +2,11 @@ set(BASE_TARGET base)
 
 set(BASE_HEADER_LIST
     Motor.hpp
-    Platform.hpp
 )
 list(TRANSFORM BASE_HEADER_LIST PREPEND "include/${BASE_TARGET}/")
 
 set(BASE_SOURCE_LIST
     Motor.cpp
-    Platform.cpp
 )
 list(TRANSFORM BASE_SOURCE_LIST PREPEND "src/")
 
