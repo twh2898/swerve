@@ -1,50 +1,23 @@
 #include "Platform.hpp"
 
 namespace swerve {
+    using base::DriveMotor;
+    using base::ServoMotor;
     using std::make_shared;
 
-    SwerveDrive::SwerveDrive(webots::Motor * axisMotor,
-                             webots::Motor * wheelMotor,
-                             webots::PositionSensor * axisEncoder,
-                             PID & pid)
-        : SwerveDrive(make_shared<ServoMotor>(axisMotor, axisEncoder, pid),
-                      make_shared<DriveMotor>(wheelMotor)) {}
-
-    SwerveDrive::SwerveDrive(const ServoMotor::Ptr & axis,
-                             const DriveMotor::Ptr & wheel)
-        : axis(axis), wheel(wheel) {}
-
-    void SwerveDrive::enable(int samplingPeriod) {
-        axis->enable(samplingPeriod);
-    }
-
-    void SwerveDrive::disable() {
-        axis->disable();
-    }
-
-    void SwerveDrive::update(double dt) {
-        axis->update(dt);
-    }
-
-    json SwerveDrive::getTelemetry() const {
-        return json {
-            {"axis", axis->getTelemetry()},
-            {"wheel", wheel->getTelemetry()},
-        };
-    }
-}
-
-namespace swerve {
     static SwerveDrive::Ptr driveFromRobot(webots::Robot & robot,
-                                            const string & driveName,
-                                            PID & pid) {
+                                           const string & driveName,
+                                           PID & pid) {
         auto * axisMotor = robot.getMotor(driveName + " axis motor");
         auto * wheelMotor = robot.getMotor(driveName + " wheel motor");
         auto * axisEncoder = robot.getPositionSensor(driveName + " axis sensor");
-        return make_shared<SwerveDrive>(axisMotor, wheelMotor, axisEncoder, pid);
+        DriveMotor::Ptr drive = make_shared<DriveMotor>(wheelMotor);
+        ServoMotor::Ptr servo = make_shared<ServoMotor>(axisMotor, axisEncoder, pid);
+        return make_shared<SwerveDrive>(drive, servo);
     }
 
-    Platform::Platform(PID & swervePID) : robot(), lastStep(0.0) {
+    Platform::Platform(PID & swervePID)
+        : robot(), lastStep(0.0) {
         gps = robot.getGPS("gps");
         imu = robot.getInertialUnit("imu");
 

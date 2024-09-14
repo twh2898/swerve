@@ -71,15 +71,15 @@ int main() {
             wheelSpeed = 0;
         }
 
-        platform->frontRight->axis->setTarget(axisTarget);
-        platform->frontLeft->axis->setTarget(axisTarget);
-        platform->backRight->axis->setTarget(axisTarget);
-        platform->backLeft->axis->setTarget(axisTarget);
+        platform->frontRight->setTarget(axisTarget);
+        platform->frontLeft->setTarget(axisTarget);
+        platform->backRight->setTarget(axisTarget);
+        platform->backLeft->setTarget(axisTarget);
 
-        platform->frontRight->wheel->setVelocity(wheelSpeed);
-        platform->frontLeft->wheel->setVelocity(wheelSpeed);
-        platform->backRight->wheel->setVelocity(wheelSpeed);
-        platform->backLeft->wheel->setVelocity(wheelSpeed);
+        platform->frontRight->setVelocity(wheelSpeed);
+        platform->frontLeft->setVelocity(wheelSpeed);
+        platform->backRight->setVelocity(wheelSpeed);
+        platform->backLeft->setVelocity(wheelSpeed);
 
         R_PROFILE_STEP(clkTelem, {
             tel.send(platform.get());

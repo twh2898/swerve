@@ -9,6 +9,7 @@
 #include <webots/Robot.hpp>
 
 #include "base/Motor.hpp"
+#include "base/SwerveDrive.hpp"
 #include "util/PID.hpp"
 #include "util/Telemetry.hpp"
 
@@ -17,30 +18,8 @@ namespace swerve {
     using std::shared_ptr;
     using util::TelemetrySender;
     using util::PID;
+    using base::SwerveDrive;
     using json = util::json;
-
-    struct SwerveDrive : public TelemetrySender {
-        using Ptr = shared_ptr<SwerveDrive>;
-        using ConstPtr = const shared_ptr<SwerveDrive>;
-
-        ServoMotor::Ptr axis;
-        DriveMotor::Ptr wheel;
-
-        SwerveDrive(webots::Motor * axisMotor,
-                    webots::Motor * wheelMotor,
-                    webots::PositionSensor * axisEncoder,
-                    PID & pid);
-
-        SwerveDrive(const ServoMotor::Ptr & axis, const DriveMotor::Ptr & wheel);
-
-        void enable(int samplingPeriod);
-
-        void disable();
-
-        void update(double dt);
-
-        json getTelemetry() const override;
-    };
 
     class Platform : public TelemetrySender {
         int lastStep;

@@ -1,7 +1,8 @@
 #include "base/Motor.hpp"
 
-namespace swerve {
-    DriveMotor::DriveMotor(webots::Motor * motor) : motor(motor) {
+namespace base {
+    DriveMotor::DriveMotor(webots::Motor * motor)
+        : motor(motor) {
         motor->setPosition(INFINITY);
         motor->setVelocity(0.0);
     }
@@ -27,7 +28,7 @@ namespace swerve {
     }
 }
 
-namespace swerve {
+namespace base {
     ServoMotor::ServoMotor(webots::Motor * motor,
                            webots::PositionSensor * encoder,
                            PID & pid)
