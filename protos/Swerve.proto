@@ -64,6 +64,7 @@ PROTO Swerve [
         wheelMaxVelocity IS wheelMaxVelocity
       }
       Caster {
+        name "idle"
         translation -0.2 0 0
       }
       Group {

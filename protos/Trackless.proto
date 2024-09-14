@@ -1,7 +1,7 @@
 #VRML_SIM R2023b utf8
 
-EXTERNPROTO "../protos/Drive.proto"
-EXTERNPROTO "../protos/Caster.proto"
+EXTERNPROTO "../protos/drive/Drive.proto"
+EXTERNPROTO "../protos/caster/Caster.proto"
 
 PROTO Trackless [
   field SFVec3f    translation  0 0 0

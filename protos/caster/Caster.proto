@@ -4,6 +4,7 @@
 PROTO Caster [
   field SFVec3f    translation  0 0 0
   field SFRotation rotation     0 0 1 0
+  field SFString   name   "drive"
   field SFString   wheelContactMaterial "wheel"
 ]
 {
@@ -16,37 +17,52 @@ PROTO Caster [
           axis 0 0 1
         }
         endPoint Solid {
-          translation 0 0.0381 -0.06985
+          name %{= '"' .. fields.name.value .. ' caster frame"' }%
+          translation -0.0381 0 -0.06985
+          # Correct forwards direction towards pivot
+          rotation 0 0 1 %{= math.pi / 2 }%
           children [
-              CadShape {
-                url "model/frame.dae"
+            CadShape {
+              url "model/frame.dae"
+            }
+            HingeJoint {
+              jointParameters HingeJointParameters {
               }
-              HingeJoint {
-                jointParameters HingeJointParameters {
-                }
-                endPoint Solid {
+              endPoint Solid {
+                name %{= '"' .. fields.name.value .. ' caster wheel"' }%
+                children [
+                  CadShape {
+                    url "model/wheel.dae"
+                  }
+                ]
+                boundingObject Pose {
+                  rotation 0 1 0 %{= math.pi / 2 }%
                   children [
-                    CadShape {
-                      url "model/wheel.dae"
+                    Cylinder {
+                      height 0.0508
+                      radius 0.0508
+                      subdivision 24
                     }
                   ]
-                  boundingObject Pose {
-                    rotation 0 1 0 %{= math.pi / 2 }%
-                    children [
-                      Cylinder {
-                        height 0.0508
-                        radius 0.0508
-                        subdivision 24
-                      }
-                    ]
-                  }
-                  contactMaterial IS wheelContactMaterial
-                  physics Physics {
-                    density 1410
-                  }
+                }
+                contactMaterial IS wheelContactMaterial
+                physics Physics {
+                  density 1410
                 }
               }
+            }
           ]
+          # Defined to surpress warning of physics 
+          boundingObject Pose {
+            translation 0 -0.0381 0.091775
+            children [
+              Cylinder {
+                height 0.04445
+                radius 0.0065
+                subdivision 2
+              }
+            ]
+          }
           physics Physics {
           }
         }

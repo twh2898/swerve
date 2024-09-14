@@ -19,6 +19,8 @@ PROTO Drive [
       Solid {
         name IS name
         translation 0 0 -0.10795
+        # Correct forwards direction towards steer motor
+        rotation 0 0 1 %{= math.pi / 2 }%
         children [
           CadShape {
             url "model/mount.dae"
@@ -40,52 +42,90 @@ PROTO Drive [
             ]
             endPoint Solid {
               children [
-                  CadShape {
-                    url "model/frame.dae"
+                CadShape {
+                  url "model/frame.dae"
+                }
+                HingeJoint {
+                  jointParameters HingeJointParameters {
+                    axis 1 0 0
+                    anchor 0 0 0
                   }
-                  HingeJoint {
-                    jointParameters HingeJointParameters {
-                      axis 1 0 0
-                      anchor 0 0 0
+                  device [
+                    RotationalMotor {
+                      name %{= '"' .. fields.name.value .. ' wheel motor"' }%
+                      maxVelocity IS wheelMaxVelocity
                     }
-                    device [
-                      RotationalMotor {
-                        name %{= '"' .. fields.name.value .. ' wheel motor"' }%
-                        maxVelocity IS wheelMaxVelocity
-                      }
-                      PositionSensor {
-                        name %{= '"' .. fields.name.value .. ' wheel sensor"' }%
-                        resolution IS wheelResolution
+                    PositionSensor {
+                      name %{= '"' .. fields.name.value .. ' wheel sensor"' }%
+                      resolution IS wheelResolution
+                    }
+                  ]
+                  endPoint Solid {
+                    children [
+                      CadShape {
+                        url "model/wheel.dae"
                       }
                     ]
-                    endPoint Solid {
+                    boundingObject Pose {
+                      translation 0 0 0
+                      rotation 0 1 0 %{= math.pi / 2 }%
                       children [
-                        CadShape {
-                          url "model/wheel.dae"
+                        Cylinder {
+                          height 0.0762
+                          radius 0.0762
+                          subdivision 24
                         }
                       ]
-                      boundingObject Pose {
-                        translation 0 0 0
-                        rotation 0 1 0 %{= math.pi / 2 }%
-                        children [
-                          Cylinder {
-                            height 0.0762
-                            radius 0.0762
-                            subdivision 24
-                          }
-                        ]
-                      }
-                      contactMaterial IS wheelContactMaterial
-                      physics Physics {
-                      }
+                    }
+                    contactMaterial IS wheelContactMaterial
+                    physics Physics {
                     }
                   }
+                }
               ]
+              boundingObject Pose {
+                translation 0 0 0.09525
+                children [
+                  Box {
+                    size 0.088900 0.152400 0.012700
+                  }
+                ]
+              }
               physics Physics {
               }
             }
           }
         ]
+        boundingObject Group {
+          children [
+            Pose {
+              translation 0 0 0.177165
+              children [
+                Cylinder {
+                  radius 0.0508
+                  height 0.138430
+                }
+              ]
+            }
+            Pose {
+              translation 0 -0.095250 0.15748
+              children [
+                Cylinder {
+                  radius 0.0381
+                  height 0.076200
+                }
+              ]
+            }
+            Pose {
+              translation 0 -0.038100 0.113665
+              children [
+                Box {
+                  size 0.1778 0.2286 0.01143
+                }
+              ]
+            }
+          ]
+        }
         physics Physics {
         }
       }
