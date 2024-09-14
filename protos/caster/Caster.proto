@@ -18,7 +18,7 @@ PROTO Caster [
         }
         endPoint Solid {
           name %{= '"' .. fields.name.value .. ' caster frame"' }%
-          translation -0.0381 0 -0.06985
+          translation -0.0381 0 0.0508
           # Correct forwards direction towards pivot
           rotation 0 0 1 %{= math.pi / 2 }%
           children [

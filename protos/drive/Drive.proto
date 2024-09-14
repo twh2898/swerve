@@ -18,7 +18,7 @@ PROTO Drive [
     children [
       Solid {
         name IS name
-        translation 0 0 -0.10795
+        translation 0 0 0.0762
         # Correct forwards direction towards steer motor
         rotation 0 0 1 %{= math.pi / 2 }%
         children [
