@@ -4,7 +4,7 @@
 PROTO Caster [
   field SFVec3f    translation  0 0 0
   field SFRotation rotation     0 0 1 0
-  field SFString   name   "drive"
+  field SFString   name   "caster"
   field SFString   wheelContactMaterial "wheel"
 ]
 {
@@ -52,7 +52,7 @@ PROTO Caster [
               }
             }
           ]
-          # Defined to surpress warning of physics 
+          # Defined to suppress warning of physics 
           boundingObject Pose {
             translation 0 -0.0381 0.091775
             children [

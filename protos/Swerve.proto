@@ -2,6 +2,7 @@
 
 EXTERNPROTO "../protos/drive/Drive.proto"
 EXTERNPROTO "../protos/caster/Caster.proto"
+EXTERNPROTO "../protos/caster/SpringCaster.proto"
 
 PROTO Swerve [
   field SFVec3f    translation  0 0 0
@@ -47,21 +48,21 @@ PROTO Swerve [
         axisMaxVelocity IS axisMaxVelocity
         wheelMaxVelocity IS wheelMaxVelocity
       }
-      Caster {
+      SpringCaster {
         name "front left idle"
-        translation 0.4 0.2 0.001
+        translation 0.4 0.2 0
       }
-      Caster {
+      SpringCaster {
         name "front right idle"
-        translation 0.4 -0.2 0.001
+        translation 0.4 -0.2 0
       }
-      Caster {
+      SpringCaster {
         name "back left idle"
-        translation -0.4 0.2 0.001
+        translation -0.4 0.2 0
       }
-      Caster {
+      SpringCaster {
         name "back right idle"
-        translation -0.4 -0.2 0.001
+        translation -0.4 -0.2 0
       }
       Group {
         children IS children

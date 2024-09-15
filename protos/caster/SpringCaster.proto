@@ -1,0 +1,51 @@
+#VRML_SIM R2023b utf8
+# tags: static
+
+EXTERNPROTO "Caster.proto"
+
+PROTO SpringCaster [
+  field SFVec3f    translation     0 0 0
+  field SFRotation rotation        0 0 0 0
+  field SFFloat    minStop         0
+  field SFFloat    maxStop         0.01
+  field SFFloat    springConstant  100
+  field SFFloat    dampingConstant 10
+  field SFString   name            "springCaster"
+  field SFString   wheelContactMaterial "wheel"
+]
+{
+  Pose {
+    translation IS translation
+    rotation IS rotation
+    children [
+      SliderJoint {
+        jointParameters JointParameters {
+          axis 0 0 1
+          springConstant IS springConstant
+          dampingConstant IS dampingConstant
+          minStop IS minStop
+          maxStop IS maxStop
+        }
+        endPoint Solid {
+          name %{= '"' .. fields.name.value .. ' suspension"' }%
+          children [
+            Caster {
+              name IS name
+              wheelContactMaterial IS wheelContactMaterial
+            }
+          ]
+          boundingObject Pose {
+            translation 0 0 0.142575
+            children [
+              Box {
+                size 0.01 0.01 0.01
+              }
+            ]
+          }
+          physics Physics {
+          }
+        }
+      }
+    ]
+  }
+}
