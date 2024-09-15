@@ -49,19 +49,19 @@ PROTO Swerve [
       }
       Caster {
         name "front left idle"
-        translation 0.4 0.2 0
+        translation 0.4 0.2 0.001
       }
       Caster {
         name "front right idle"
-        translation 0.4 -0.2 0
+        translation 0.4 -0.2 0.001
       }
       Caster {
         name "back left idle"
-        translation -0.4 0.2 0
+        translation -0.4 0.2 0.001
       }
       Caster {
         name "back right idle"
-        translation -0.4 -0.2 0
+        translation -0.4 -0.2 0.001
       }
       Group {
         children IS children
