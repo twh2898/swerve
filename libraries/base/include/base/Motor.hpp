@@ -4,13 +4,11 @@
 #include <webots/Motor.hpp>
 #include <webots/PositionSensor.hpp>
 
-#include "util/PID.hpp"
 #include "util/Telemetry.hpp"
 
 namespace base {
     using std::shared_ptr;
     using util::TelemetrySender;
-    using util::PID;
     using json = util::json;
 
     class DriveMotor : public TelemetrySender {
@@ -39,11 +37,10 @@ namespace base {
     private:
         webots::Motor * motor;
         webots::PositionSensor * encoder;
-        PID pid;
         double target;
 
     public:
-        ServoMotor(webots::Motor * motor, webots::PositionSensor * encoder, PID & pid);
+        ServoMotor(webots::Motor * motor, webots::PositionSensor * encoder);
 
         void enable(int samplingPeriod);
 
@@ -56,8 +53,6 @@ namespace base {
         double getPosition() const;
 
         double getVelocity() const;
-
-        void update(double dt);
 
         json getTelemetry() const override;
     };

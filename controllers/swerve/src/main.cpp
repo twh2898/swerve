@@ -30,9 +30,7 @@ int main() {
 
     Telemetry tel(config.telemetry.port, config.telemetry.address);
 
-    PID swervePID(config.swerve.pid.p, config.swerve.pid.i, config.swerve.pid.d);
-
-    Platform::Ptr platform = make_shared<Platform>(swervePID);
+    Platform::Ptr platform = make_shared<Platform>();
     int time_step = config.sim.step;
     if (time_step < platform->robot.getBasicTimeStep())
         time_step = platform->robot.getBasicTimeStep();
@@ -71,15 +69,11 @@ int main() {
             wheelSpeed = 0;
         }
 
-        platform->frontRight->setTarget(axisTarget);
-        platform->frontLeft->setTarget(axisTarget);
-        platform->backRight->setTarget(axisTarget);
-        platform->backLeft->setTarget(axisTarget);
+        platform->rightDrive->setSteer(axisTarget);
+        platform->leftDrive->setSteer(axisTarget);
 
-        platform->frontRight->setVelocity(wheelSpeed);
-        platform->frontLeft->setVelocity(wheelSpeed);
-        platform->backRight->setVelocity(wheelSpeed);
-        platform->backLeft->setVelocity(wheelSpeed);
+        platform->rightDrive->setDriveVelocity(wheelSpeed);
+        platform->leftDrive->setDriveVelocity(wheelSpeed);
 
         R_PROFILE_STEP(clkTelem, {
             tel.send(platform.get());

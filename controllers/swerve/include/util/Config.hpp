@@ -3,7 +3,6 @@
 #include <exception>
 #include <string>
 
-#include "util/PID.hpp"
 #include "json.hpp"
 
 namespace util {
@@ -28,23 +27,12 @@ namespace util {
         string address;
     };
 
-    struct PIDConfig {
-        double p;
-        double i;
-        double d;
-    };
-
-    struct SwerveConfig {
-        PIDConfig pid;
-    };
-
     struct Config {
         json data;
 
         SimConfig sim;
 
         TelemetryConfig telemetry;
-        SwerveConfig swerve;
 
         static Config fromFile(const string & file);
     };

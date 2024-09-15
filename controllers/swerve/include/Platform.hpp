@@ -10,14 +10,12 @@
 
 #include "base/Motor.hpp"
 #include "base/SwerveDrive.hpp"
-#include "util/PID.hpp"
 #include "util/Telemetry.hpp"
 
 namespace swerve {
     using std::string;
     using std::shared_ptr;
     using util::TelemetrySender;
-    using util::PID;
     using base::SwerveDrive;
     using json = util::json;
 
@@ -30,15 +28,13 @@ namespace swerve {
 
     public:
         webots::Robot robot;
-        SwerveDrive::Ptr frontRight;
-        SwerveDrive::Ptr frontLeft;
-        SwerveDrive::Ptr backRight;
-        SwerveDrive::Ptr backLeft;
+        SwerveDrive::Ptr rightDrive;
+        SwerveDrive::Ptr leftDrive;
         webots::GPS * gps;
         webots::InertialUnit * imu;
 
     public:
-        Platform(PID & swervePID);
+        Platform();
 
         int step(int duration);
 

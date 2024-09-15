@@ -27,17 +27,15 @@ namespace base {
 
         void disable();
 
-        void setTarget(double newTarget);
+        void setSteer(double steer);
 
-        double getTarget() const;
+        double getSteerTarget() const;
 
-        double getAngle() const;
+        double getSteer() const;
 
-        void setVelocity(double velocity);
+        void setDriveVelocity(double velocity);
 
-        double getVelocity() const;
-
-        void update(double dt);
+        double getDriveVelocity() const;
 
         json getTelemetry() const override;
     };

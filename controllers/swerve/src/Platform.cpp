@@ -6,37 +6,34 @@ namespace swerve {
     using std::make_shared;
 
     static SwerveDrive::Ptr driveFromRobot(webots::Robot & robot,
-                                           const string & driveName,
-                                           PID & pid) {
+                                           const string & driveName) {
         auto * axisMotor = robot.getMotor(driveName + " axis motor");
         auto * wheelMotor = robot.getMotor(driveName + " wheel motor");
         auto * axisEncoder = robot.getPositionSensor(driveName + " axis sensor");
         DriveMotor::Ptr drive = make_shared<DriveMotor>(wheelMotor);
-        ServoMotor::Ptr servo = make_shared<ServoMotor>(axisMotor, axisEncoder, pid);
+        ServoMotor::Ptr servo = make_shared<ServoMotor>(axisMotor, axisEncoder);
         return make_shared<SwerveDrive>(drive, servo);
     }
 
-    Platform::Platform(PID & swervePID)
+    Platform::Platform()
         : robot(), lastStep(0.0) {
         gps = robot.getGPS("gps");
         imu = robot.getInertialUnit("imu");
 
-        frontRight = driveFromRobot(robot, "front right drive", swervePID);
-        frontLeft = driveFromRobot(robot, "front left drive", swervePID);
-        backRight = driveFromRobot(robot, "back right drive", swervePID);
-        backLeft = driveFromRobot(robot, "back left drive", swervePID);
+        rightDrive = driveFromRobot(robot, "right drive");
+        leftDrive = driveFromRobot(robot, "left drive");
     }
 
     int Platform::step(int duration) {
         lastStep = duration;
         int res = robot.step(duration);
         double dt = duration / 1000.0;
-        if (res != -1) {
-            frontRight->update(dt);
-            frontLeft->update(dt);
-            backRight->update(dt);
-            backLeft->update(dt);
-        }
+        // if (res != -1) {
+        //     frontRight->update(dt);
+        //     frontLeft->update(dt);
+        //     backRight->update(dt);
+        //     backLeft->update(dt);
+        // }
         return res;
     }
 
@@ -51,27 +48,21 @@ namespace swerve {
     void Platform::enable(int samplingPeriod) {
         gps->enable(samplingPeriod);
         imu->enable(samplingPeriod);
-        frontRight->enable(samplingPeriod);
-        frontLeft->enable(samplingPeriod);
-        backRight->enable(samplingPeriod);
-        backLeft->enable(samplingPeriod);
+        rightDrive->enable(samplingPeriod);
+        leftDrive->enable(samplingPeriod);
     }
 
     void Platform::disable() {
         gps->disable();
         imu->disable();
-        frontRight->disable();
-        frontLeft->disable();
-        backRight->disable();
-        backLeft->disable();
+        rightDrive->disable();
+        leftDrive->disable();
     }
 
     json Platform::getTelemetry() const {
         json motorData = {
-            {"front_right", frontRight->getTelemetry()},
-            {"front_left", frontLeft->getTelemetry()},
-            {"back_right", backRight->getTelemetry()},
-            {"back_left", backLeft->getTelemetry()},
+            {"left", rightDrive->getTelemetry()},
+            {"right", leftDrive->getTelemetry()},
         };
 
         auto * gpsV = gps->getValues();

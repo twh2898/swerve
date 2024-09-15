@@ -8,12 +8,6 @@ namespace base {
     }
 
     void DriveMotor::setVelocity(double velocity) {
-        double max = motor->getMaxVelocity();
-        if (velocity > max)
-            velocity = max;
-        if (velocity < -max)
-            velocity = -max;
-
         motor->setVelocity(velocity);
     }
 
@@ -23,18 +17,17 @@ namespace base {
 
     json DriveMotor::getTelemetry() const {
         return json {
-            {"velocity", motor->getVelocity()},
+            {"velocity", getVelocity()},
         };
     }
 }
 
 namespace base {
     ServoMotor::ServoMotor(webots::Motor * motor,
-                           webots::PositionSensor * encoder,
-                           PID & pid)
-        : motor(motor), encoder(encoder), pid(pid), target(0.0) {
-        motor->setPosition(INFINITY);
-        motor->setVelocity(0.0);
+                           webots::PositionSensor * encoder)
+        : motor(motor), encoder(encoder), target(0.0) {
+        motor->setPosition(target);
+        motor->setVelocity(motor->getMaxVelocity());
     }
 
     void ServoMotor::enable(int samplingPeriod) {
@@ -47,6 +40,7 @@ namespace base {
 
     void ServoMotor::setTarget(double newTarget) {
         target = newTarget;
+        motor->setPosition(target);
     }
 
     double ServoMotor::getTarget() const {
@@ -61,24 +55,11 @@ namespace base {
         return motor->getVelocity();
     }
 
-    void ServoMotor::update(double dt) {
-        double command = pid.calculate(dt, target, encoder->getValue());
-
-        double max = motor->getMaxVelocity();
-        if (command > max)
-            command = max;
-        if (command < -max)
-            command = -max;
-
-        motor->setVelocity(command);
-    }
-
     json ServoMotor::getTelemetry() const {
         return json {
-            {"target", target},
+            {"target", getTarget()},
             {"position", getPosition()},
             {"velocity", getVelocity()},
-            {"pid", pid.getTelemetry()},
         };
     }
 }

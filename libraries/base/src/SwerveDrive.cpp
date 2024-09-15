@@ -13,34 +13,30 @@ namespace base {
         servo->disable();
     }
 
-    void SwerveDrive::setTarget(double newTarget) {
-        servo->setTarget(newTarget);
+    void SwerveDrive::setSteer(double steer) {
+        servo->setTarget(steer);
     }
 
-    double SwerveDrive::getTarget() const {
+    double SwerveDrive::getSteerTarget() const {
         return servo->getTarget();
     }
 
-    double SwerveDrive::getAngle() const {
+    double SwerveDrive::getSteer() const {
         return servo->getPosition();
     }
 
-    void SwerveDrive::setVelocity(double velocity) {
+    void SwerveDrive::setDriveVelocity(double velocity) {
         drive->setVelocity(velocity);
     }
 
-    double SwerveDrive::getVelocity() const {
+    double SwerveDrive::getDriveVelocity() const {
         return drive->getVelocity();
-    }
-
-    void SwerveDrive::update(double dt) {
-        servo->update(dt);
     }
 
     json SwerveDrive::getTelemetry() const {
         return json {
             {"drive", drive->getTelemetry()},
-            {"servo", servo->getTelemetry()},
+            {"steer", servo->getTelemetry()},
         };
     }
 }

@@ -48,31 +48,10 @@ namespace util {
             address : telemConfig["address"],
         };
 
-        TEST_KEY(data, "swerve")
-        auto swerveConfig = data["swerve"];
-
-        TEST_SUB_KEY(swerveConfig, "swerve", "pid")
-        auto pidConfig = swerveConfig["pid"];
-
-        TEST_SUB_KEY(pidConfig, "swerve.pid", "p")
-        TEST_SUB_KEY(pidConfig, "swerve.pid", "i")
-        TEST_SUB_KEY(pidConfig, "swerve.pid", "d")
-
-        PIDConfig pid {
-            p : pidConfig["p"],
-            i : pidConfig["i"],
-            d : pidConfig["d"],
-        };
-
-        SwerveConfig swerve {
-            pid : pid,
-        };
-
         return Config {
             data : data,
             sim : sim,
             telemetry : telem,
-            swerve : swerve,
         };
     }
 }
