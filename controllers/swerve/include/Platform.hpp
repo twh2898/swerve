@@ -20,11 +20,12 @@ namespace swerve {
     using json = util::json;
 
     class Platform : public TelemetrySender {
-        int lastStep;
-
     public:
         using Ptr = shared_ptr<Platform>;
         using ConstPtr = const shared_ptr<Platform>;
+
+    private:
+        int lastStep;
 
     public:
         webots::Robot robot;
@@ -33,7 +34,6 @@ namespace swerve {
         webots::GPS * gps;
         webots::InertialUnit * imu;
 
-    public:
         Platform();
 
         int step(int duration);
