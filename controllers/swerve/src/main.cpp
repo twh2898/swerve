@@ -6,6 +6,7 @@ using namespace webots;
 #include <stdexcept>
 
 #include "Platform.hpp"
+#include "State.hpp"
 #include "util/Config.hpp"
 #include "util/Profiler.hpp"
 #include "util/Telemetry.hpp"
@@ -50,6 +51,8 @@ int main() {
     // LED led("led1");
     // led.set(0);
 
+    StateMachine::Ptr stateMachine = make_shared<StateMachine>(platform);
+
     clkSim->reset();
     while (platform->step(time_step) != -1) {
         if (config.sim.stop > 0 && platform->robot.getTime() >= config.sim.stop)
@@ -57,23 +60,7 @@ int main() {
 
         clkSim->tick();
 
-        if (platform->robot.getTime() >= config.sim.flip) {
-            // axisTarget = 1;
-            wheelSpeed = 5;
-            // led.set(1);
-        }
-        else {
-            // axisSpeed = SPEED / 5;
-            // axisTarget = 2;
-            axisTarget = 1;
-            wheelSpeed = 0;
-        }
-
-        platform->rightDrive->setSteer(axisTarget);
-        platform->leftDrive->setSteer(axisTarget);
-
-        platform->rightDrive->setDriveVelocity(wheelSpeed);
-        platform->leftDrive->setDriveVelocity(wheelSpeed);
+        stateMachine->step();
 
         R_PROFILE_STEP(clkTelem, {
             tel.send(platform.get());

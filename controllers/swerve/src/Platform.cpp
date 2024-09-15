@@ -26,15 +26,7 @@ namespace swerve {
 
     int Platform::step(int duration) {
         lastStep = duration;
-        int res = robot.step(duration);
-        double dt = duration / 1000.0;
-        // if (res != -1) {
-        //     frontRight->update(dt);
-        //     frontLeft->update(dt);
-        //     backRight->update(dt);
-        //     backLeft->update(dt);
-        // }
-        return res;
+        return robot.step(duration);
     }
 
     int Platform::getSamplingPeriod() const {

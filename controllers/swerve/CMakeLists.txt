@@ -8,6 +8,7 @@ set(TARGET swerve)
 set(HEADER_LIST
     util/Config.hpp
     Platform.hpp
+    State.hpp
 )
 # list(TRANSFORM HEADER_LIST PREPEND "include/${TARGET}/")
 list(TRANSFORM HEADER_LIST PREPEND "include/")
