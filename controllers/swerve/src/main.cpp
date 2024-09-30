@@ -111,7 +111,9 @@ int main() {
 
         clkSim->tick();
 
-        sm->step();
+        R_PROFILE_STEP(clkPlan,{
+            sm->step();
+        });
 
         R_PROFILE_STEP(clkTelem, {
             tel.send(platform.get());
