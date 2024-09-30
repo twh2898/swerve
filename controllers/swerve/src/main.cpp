@@ -4,6 +4,7 @@
 using namespace webots;
 
 #include <stdexcept>
+#include <vector>
 
 #include "Platform.hpp"
 #include "State.hpp"
@@ -12,8 +13,60 @@ using namespace webots;
 #include "util/Telemetry.hpp"
 #include "util/log.hpp"
 
+using namespace std;
 using namespace util;
 using namespace swerve;
+
+class State1 : public State {
+public:
+    State1()
+        : State("state1") {}
+
+    void enter(const Platform::Ptr & plat, StateMachine * sm) override {
+        plat->leftDrive->setDriveVelocity(0);
+        plat->rightDrive->setDriveVelocity(0);
+    }
+
+    void step(const Platform::Ptr & plat, StateMachine * sm) override {
+        if (plat->robot.getTime() >= 1) {
+            sm->transition("state2");
+        }
+
+        plat->leftDrive->setSteer(1);
+        plat->rightDrive->setSteer(1);
+    }
+};
+
+class State2 : public State {
+public:
+    State2()
+        : State("state2") {}
+
+    void step(const Platform::Ptr & plat, StateMachine * sm) override {
+        if (plat->robot.getTime() >= 1) {
+            sm->transition("stop");
+        }
+
+        plat->leftDrive->setSteer(1);
+        plat->rightDrive->setSteer(1);
+
+        plat->leftDrive->setDriveVelocity(5);
+        plat->rightDrive->setDriveVelocity(5);
+    }
+};
+
+class StopState : public State {
+public:
+    StopState()
+        : State("stop") {}
+
+    void step(const Platform::Ptr & plat, StateMachine * sm) override {
+        plat->leftDrive->setDriveVelocity(0);
+        plat->rightDrive->setDriveVelocity(0);
+
+        sm->transition("end");
+    }
+};
 
 int main() {
     Logging::init_logging(spdlog::level::trace);
@@ -37,7 +90,12 @@ int main() {
         time_step = platform->robot.getBasicTimeStep();
     platform->enable(time_step);
 
-    int wheelSpeed, axisTarget;
+    State::Ptr state1 = make_shared<State1>();
+    State::Ptr state2 = make_shared<State2>();
+    State::Ptr stop = make_shared<StopState>();
+
+    vector<State::Ptr> states {state1, state2, stop};
+    StateMachine::Ptr sm = make_shared<StateMachine>(platform, state1, states);
 
     Logging::Main->info("Initialization complete");
 
@@ -51,8 +109,6 @@ int main() {
     // LED led("led1");
     // led.set(0);
 
-    StateMachine::Ptr stateMachine = make_shared<StateMachine>(platform);
-
     clkSim->reset();
     while (platform->step(time_step) != -1) {
         if (config.sim.stop > 0 && platform->robot.getTime() >= config.sim.stop)
@@ -60,7 +116,7 @@ int main() {
 
         clkSim->tick();
 
-        stateMachine->step();
+        sm->step();
 
         R_PROFILE_STEP(clkTelem, {
             tel.send(platform.get());

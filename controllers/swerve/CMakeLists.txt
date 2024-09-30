@@ -17,6 +17,7 @@ set(SOURCE_LIST
     Config.cpp
     main.cpp
     Platform.cpp
+    State.cpp
 )
 list(TRANSFORM SOURCE_LIST PREPEND "src/")
 

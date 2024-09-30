@@ -1,81 +1,56 @@
 #pragma once
 
+#include <map>
 #include <memory>
+#include <string>
+#include <vector>
 
 #include "Platform.hpp"
 
 namespace swerve {
     using std::shared_ptr;
+    using std::make_shared;
+    using std::string;
+    using std::map;
+    using std::vector;
 
-    enum class State {
-        BEGIN,
-        STATE1,
-        STATE2,
-        END,
+    class StateMachine;
+
+    class State {
+    public:
+        using Ptr = shared_ptr<State>;
+
+        const string name;
+
+        State(const string & name);
+
+        virtual ~State();
+
+        virtual void enter(const Platform::Ptr & plat, StateMachine * sm);
+        virtual void step(const Platform::Ptr & plat, StateMachine * sm);
+        virtual void exit(const Platform::Ptr & plat, StateMachine * sm);
     };
 
     class StateMachine {
     public:
         using Ptr = shared_ptr<StateMachine>;
-        using ConstPtr = const shared_ptr<StateMachine>;
 
-    protected:
+    private:
         Platform::Ptr plat;
-        State state;
-
-        void begin() {
-            state = State::STATE1;
-        }
-
-        void state1() {
-            if (plat->robot.getTime() >= 1) {
-                state = State::STATE2;
-            }
-
-            plat->leftDrive->setSteer(1);
-            plat->rightDrive->setSteer(1);
-
-            plat->leftDrive->setDriveVelocity(0);
-            plat->rightDrive->setDriveVelocity(0);
-        }
-
-        void state2() {
-            if (plat->robot.getTime() >= 3) {
-                state = State::END;
-            }
-
-            plat->leftDrive->setSteer(1);
-            plat->rightDrive->setSteer(1);
-
-            plat->leftDrive->setDriveVelocity(5);
-            plat->rightDrive->setDriveVelocity(5);
-        }
-
-        void end() {
-            plat->leftDrive->setDriveVelocity(0);
-            plat->rightDrive->setDriveVelocity(0);
-        }
+        State::Ptr activeState;
+        map<string, State::Ptr> states;
 
     public:
-        StateMachine(const Platform::Ptr & plat)
-            : state(State::BEGIN), plat(plat) {}
+        StateMachine(const Platform::Ptr & plat,
+                     const State::Ptr & active,
+                     const vector<State::Ptr> & states);
 
-        void step() {
-            switch (state) {
-                case State::BEGIN:
-                    begin();
-                    break;
-                case State::STATE1:
-                    state1();
-                    break;
-                case State::STATE2:
-                    state2();
-                    break;
-                case State::END:
-                default:
-                    end();
-                    break;
-            }
-        }
+        StateMachine(const Platform::Ptr & plat,
+                     const State::Ptr & active,
+                     const map<string, State::Ptr> & states);
+
+        void step();
+
+        void transition(const string & next);
     };
 }
