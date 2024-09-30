@@ -62,7 +62,7 @@ namespace swerve {
         activeState->exit(plat, this);
         auto & state = states[next];
 
-        state->enter(plat, this);
         activeState = state;
+        state->enter(plat, this);
     }
 }

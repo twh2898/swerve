@@ -30,6 +30,7 @@ public:
     void step(const Platform::Ptr & plat, StateMachine * sm) override {
         if (plat->robot.getTime() >= 1) {
             sm->transition("state2");
+            return;
         }
 
         plat->leftDrive->setSteer(1);
@@ -42,29 +43,24 @@ public:
     State2()
         : State("state2") {}
 
-    void step(const Platform::Ptr & plat, StateMachine * sm) override {
-        if (plat->robot.getTime() >= 1) {
-            sm->transition("stop");
-        }
-
+    void enter(const Platform::Ptr & plat, StateMachine * sm) override {
         plat->leftDrive->setSteer(1);
         plat->rightDrive->setSteer(1);
 
         plat->leftDrive->setDriveVelocity(5);
         plat->rightDrive->setDriveVelocity(5);
     }
-};
-
-class StopState : public State {
-public:
-    StopState()
-        : State("stop") {}
 
     void step(const Platform::Ptr & plat, StateMachine * sm) override {
+        if (plat->robot.getTime() >= 2) {
+            sm->transition("end");
+            return;
+        }
+    }
+
+    void exit(const Platform::Ptr & plat, StateMachine * sm) override {
         plat->leftDrive->setDriveVelocity(0);
         plat->rightDrive->setDriveVelocity(0);
-
-        sm->transition("end");
     }
 };
 
@@ -92,9 +88,8 @@ int main() {
 
     State::Ptr state1 = make_shared<State1>();
     State::Ptr state2 = make_shared<State2>();
-    State::Ptr stop = make_shared<StopState>();
 
-    vector<State::Ptr> states {state1, state2, stop};
+    vector<State::Ptr> states {state1, state2};
     StateMachine::Ptr sm = make_shared<StateMachine>(platform, state1, states);
 
     Logging::Main->info("Initialization complete");
