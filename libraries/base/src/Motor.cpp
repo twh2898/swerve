@@ -7,8 +7,16 @@ namespace base {
         motor->setVelocity(0.0);
     }
 
+    double DriveMotor::getMaxVelocity() const {
+        return motor->getMaxVelocity();
+    }
+
     void DriveMotor::setVelocity(double velocity) {
         motor->setVelocity(velocity);
+    }
+
+    void DriveMotor::setPower(double power) {
+        setVelocity(power * getMaxVelocity());
     }
 
     double DriveMotor::getVelocity() const {

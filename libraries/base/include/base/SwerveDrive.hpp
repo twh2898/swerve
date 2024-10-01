@@ -35,6 +35,8 @@ namespace base {
 
         void setDriveVelocity(double velocity);
 
+        void setDrivePower(double power);
+
         double getDriveVelocity() const;
 
         json getTelemetry() const override;

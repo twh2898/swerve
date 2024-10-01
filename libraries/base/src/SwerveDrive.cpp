@@ -29,6 +29,10 @@ namespace base {
         drive->setVelocity(velocity);
     }
 
+    void SwerveDrive::setDrivePower(double power) {
+        drive->setPower(power);
+    }
+
     double SwerveDrive::getDriveVelocity() const {
         return drive->getVelocity();
     }

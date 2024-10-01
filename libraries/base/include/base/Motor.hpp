@@ -22,7 +22,13 @@ namespace base {
     public:
         DriveMotor(webots::Motor * motor);
 
+        double getMaxVelocity() const;
+
+        /// on the scale [-maxVel, maxVel]
         void setVelocity(double velocity);
+
+        /// on the scale [-1, 1]
+        void setPower(double power);
 
         double getVelocity() const;
 
