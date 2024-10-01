@@ -22,19 +22,13 @@ public:
     State1()
         : State("state1") {}
 
-    void enter(const Platform::Ptr & plat, StateMachine * sm) override {
-        plat->leftDrive->setDriveVelocity(0);
-        plat->rightDrive->setDriveVelocity(0);
-    }
-
     void step(const Platform::Ptr & plat, StateMachine * sm) override {
         if (plat->robot.getTime() >= 1) {
             sm->transition("state2");
             return;
         }
 
-        plat->leftDrive->setSteer(1);
-        plat->rightDrive->setSteer(1);
+        plat->tank(0, 0, 1);
     }
 };
 
@@ -44,11 +38,7 @@ public:
         : State("state2") {}
 
     void enter(const Platform::Ptr & plat, StateMachine * sm) override {
-        plat->leftDrive->setSteer(1);
-        plat->rightDrive->setSteer(1);
-
-        plat->leftDrive->setDriveVelocity(5);
-        plat->rightDrive->setDriveVelocity(5);
+        plat->tank(0.25, 0.25, 1);
     }
 
     void step(const Platform::Ptr & plat, StateMachine * sm) override {
@@ -59,8 +49,7 @@ public:
     }
 
     void exit(const Platform::Ptr & plat, StateMachine * sm) override {
-        plat->leftDrive->setDriveVelocity(0);
-        plat->rightDrive->setDriveVelocity(0);
+        plat->tank(0, 0, 0);
     }
 };
 

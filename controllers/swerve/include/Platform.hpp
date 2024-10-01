@@ -46,6 +46,8 @@ namespace swerve {
 
         void disable();
 
+        void tank(double leftPower, double rightPower, double steer);
+
         json getTelemetry() const override;
     };
 }
