@@ -9,6 +9,8 @@ PROTO Drive [
   field SFFloat    wheelResolution -1
   field SFFloat    axisMaxVelocity 20
   field SFFloat    wheelMaxVelocity 20
+  field SFFloat    axisMaxTorque 10  # Using default of 10 until a better value is known
+  field SFFloat    wheelMaxTorque 1.5
   field SFString   wheelContactMaterial "wheel"
 ]
 {
@@ -34,6 +36,7 @@ PROTO Drive [
               RotationalMotor {
                 name %{= '"' .. fields.name.value .. ' axis motor"' }%
                 maxVelocity IS axisMaxVelocity
+                maxTorque IS axisMaxTorque
               }
               PositionSensor {
                 name %{= '"' .. fields.name.value .. ' axis sensor"' }%
@@ -54,6 +57,7 @@ PROTO Drive [
                     RotationalMotor {
                       name %{= '"' .. fields.name.value .. ' wheel motor"' }%
                       maxVelocity IS wheelMaxVelocity
+                      maxTorque IS wheelMaxTorque
                     }
                     PositionSensor {
                       name %{= '"' .. fields.name.value .. ' wheel sensor"' }%
