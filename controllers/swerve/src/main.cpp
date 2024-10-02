@@ -37,16 +37,19 @@ public:
 };
 
 class State2 : public State {
+    double startTime;
+
 public:
     State2()
         : State("state2") {}
 
     void enter(const Platform::Ptr & plat, StateMachine * sm) override {
         plat->tank(0.25, 0.25);
+        startTime = plat->robot.getTime();
     }
 
     void step(const Platform::Ptr & plat, StateMachine * sm) override {
-        if (plat->robot.getTime() >= 5) {
+        if (plat->robot.getTime() - startTime >= 3) {
             sm->transition("end");
             return;
         }
