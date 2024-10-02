@@ -23,12 +23,16 @@ public:
         : State("state1") {}
 
     void step(const Platform::Ptr & plat, StateMachine * sm) override {
-        if (plat->robot.getTime() >= 1) {
-            sm->transition("state2");
-            return;
-        }
+        const double * rpy = plat->imu->getRollPitchYaw();
+        double z = rpy[2];
 
-        plat->tank(0, 0, 1);
+        if (z < 1) {
+            plat->spin(-0.125);
+        }
+        else {
+            plat->spin(0);
+            sm->transition("state2");
+        }
     }
 };
 
@@ -38,18 +42,18 @@ public:
         : State("state2") {}
 
     void enter(const Platform::Ptr & plat, StateMachine * sm) override {
-        plat->tank(0.25, 0.25, 1);
+        plat->tank(0.25, 0.25);
     }
 
     void step(const Platform::Ptr & plat, StateMachine * sm) override {
-        if (plat->robot.getTime() >= 2) {
+        if (plat->robot.getTime() >= 5) {
             sm->transition("end");
             return;
         }
     }
 
     void exit(const Platform::Ptr & plat, StateMachine * sm) override {
-        plat->tank(0, 0, 0);
+        plat->tank(0, 0);
     }
 };
 
@@ -100,7 +104,7 @@ int main() {
 
         clkSim->tick();
 
-        R_PROFILE_STEP(clkPlan,{
+        R_PROFILE_STEP(clkPlan, {
             sm->step();
         });
 

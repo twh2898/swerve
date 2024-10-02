@@ -51,12 +51,21 @@ namespace swerve {
         leftDrive->disable();
     }
 
+    void Platform::tank(double leftPower, double rightPower) {
+        leftDrive->setDrivePower(leftPower);
+        rightDrive->setDrivePower(rightPower);
+    }
+
     void Platform::tank(double leftPower, double rightPower, double steer) {
         leftDrive->setDrivePower(leftPower);
         leftDrive->setSteer(steer);
 
         rightDrive->setDrivePower(rightPower);
         rightDrive->setSteer(steer);
+    }
+
+    void Platform::spin(double power) {
+        tank(power, -power, 0);
     }
 
     json Platform::getTelemetry() const {
