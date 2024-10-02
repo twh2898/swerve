@@ -1,5 +1,7 @@
 #include "Platform.hpp"
 
+#include <cmath>
+
 namespace swerve {
     using base::DriveMotor;
     using base::ServoMotor;
@@ -66,6 +68,14 @@ namespace swerve {
 
     void Platform::spin(double power) {
         tank(power, -power, 0);
+    }
+
+    void Platform::bike(double power, double steer) {
+        leftDrive->setDrivePower(power);
+        leftDrive->setSteer((M_PI / 2) - steer);
+
+        rightDrive->setDrivePower(power);
+        rightDrive->setSteer((M_PI / 2) + steer);
     }
 
     json Platform::getTelemetry() const {

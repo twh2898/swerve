@@ -52,6 +52,8 @@ namespace swerve {
 
         void spin(double power);
 
+        void bike(double power, double steer);
+
         json getTelemetry() const override;
     };
 }

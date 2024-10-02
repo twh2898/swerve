@@ -44,7 +44,7 @@ public:
         : State("state2") {}
 
     void enter(const Platform::Ptr & plat, StateMachine * sm) override {
-        plat->tank(0.25, 0.25);
+        plat->bike(0.25, 0.2);
         startTime = plat->robot.getTime();
     }
 
@@ -86,7 +86,7 @@ int main() {
     State::Ptr state2 = make_shared<State2>();
 
     vector<State::Ptr> states {state1, state2};
-    StateMachine::Ptr sm = make_shared<StateMachine>(platform, state1, states);
+    StateMachine::Ptr sm = make_shared<StateMachine>(platform, state2, states);
 
     Logging::Main->info("Initialization complete");
 
