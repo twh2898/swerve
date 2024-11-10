@@ -13,6 +13,10 @@
 // limitations under the License.
 
 // Copied from https://github.com/ros2/rclcpp/blob/rolling/rclcpp/include/rclcpp/macros.hpp
+/*
+Modifications:
+- Remove __RCLCPP_UNIQUE_PTR_ALIAS(__VA_ARGS__) from RCLCPP_SMART_PTR_ALIASES_ONLY
+*/
 
 #include <memory>
 #include <utility>
@@ -68,8 +72,7 @@
 #define RCLCPP_SMART_PTR_ALIASES_ONLY(...) \
   __RCLCPP_SHARED_PTR_ALIAS(__VA_ARGS__) \
   __RCLCPP_WEAK_PTR_ALIAS(__VA_ARGS__) \
-  __RCLCPP_UNIQUE_PTR_ALIAS(__VA_ARGS__) \
-  __RCLCPP_MAKE_SHARED_DEFINITION(__VA_ARGS__)
+  __RCLCPP_UNIQUE_PTR_ALIAS(__VA_ARGS__)
 
 #define __RCLCPP_SHARED_PTR_ALIAS(...) \
   using SharedPtr = std::shared_ptr<__VA_ARGS__>; \

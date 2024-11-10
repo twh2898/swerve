@@ -19,6 +19,8 @@ namespace util {
      */
     class TelemetrySender {
     public:
+        RCLCPP_SMART_PTR_ALIASES_ONLY(TelemetrySender)
+
         /**
          * @brief Get a json object with telemetry data.
          *
