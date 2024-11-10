@@ -14,7 +14,9 @@
 				"focus": true,
 				"clear": true
 			},
-			"problemMatcher": [],
+			"problemMatcher": [
+				"$gcc"
+			],
 			"detail": "CMake template build task"
 		}
 	]
