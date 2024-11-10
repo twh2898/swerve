@@ -6,10 +6,9 @@
 #include <vector>
 
 #include "Platform.hpp"
+#include "rclcpp/macros.hpp"
 
 namespace swerve {
-    using std::shared_ptr;
-    using std::make_shared;
     using std::string;
     using std::map;
     using std::vector;
@@ -18,7 +17,7 @@ namespace swerve {
 
     class State {
     public:
-        using Ptr = shared_ptr<State>;
+        RCLCPP_SMART_PTR_DEFINITIONS(State)
 
         const string name;
 
@@ -26,28 +25,28 @@ namespace swerve {
 
         virtual ~State();
 
-        virtual void enter(const Platform::Ptr & plat, StateMachine * sm);
-        virtual void step(const Platform::Ptr & plat, StateMachine * sm);
-        virtual void exit(const Platform::Ptr & plat, StateMachine * sm);
+        virtual void enter(const Platform::SharedPtr & plat, StateMachine * sm);
+        virtual void step(const Platform::SharedPtr & plat, StateMachine * sm);
+        virtual void exit(const Platform::SharedPtr & plat, StateMachine * sm);
     };
 
     class StateMachine {
     public:
-        using Ptr = shared_ptr<StateMachine>;
+        RCLCPP_SMART_PTR_DEFINITIONS(StateMachine)
 
     private:
-        Platform::Ptr plat;
-        State::Ptr activeState;
-        map<string, State::Ptr> states;
+        Platform::SharedPtr plat;
+        State::SharedPtr activeState;
+        map<string, State::SharedPtr> states;
 
     public:
-        StateMachine(const Platform::Ptr & plat,
-                     const State::Ptr & active,
-                     const vector<State::Ptr> & states);
+        StateMachine(const Platform::SharedPtr & plat,
+                     const State::SharedPtr & active,
+                     const vector<State::SharedPtr> & states);
 
-        StateMachine(const Platform::Ptr & plat,
-                     const State::Ptr & active,
-                     const map<string, State::Ptr> & states);
+        StateMachine(const Platform::SharedPtr & plat,
+                     const State::SharedPtr & active,
+                     const map<string, State::SharedPtr> & states);
 
         void step();
 

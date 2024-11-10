@@ -15,16 +15,18 @@
 #include <spdlog/sinks/stdout_color_sinks.h>
 #include <spdlog/spdlog.h>
 
+#include "rclcpp/macros.hpp"
+
 namespace util::Logging {
     using std::vector;
-    using std::shared_ptr;
-    using std::make_shared;
 
     /**
      * Wrapper for a logging subsystem.
      */
     class Logger {
     public:
+        RCLCPP_SMART_PTR_DEFINITIONS(Logger)
+
         /**
          * The log message level.
          */
@@ -44,13 +46,10 @@ namespace util::Logging {
         };
 
     private:
-        shared_ptr<spdlog::logger> logger;
+        std::shared_ptr<spdlog::logger> logger;
         Level level;
 
     public:
-        using Ptr = std::shared_ptr<Logger>;
-        using ConstPtr = std::shared_ptr<const Logger>;
-
         /**
          * Create a new Logger with subsystem name and the default level.
          *
@@ -67,7 +66,7 @@ namespace util::Logging {
 #else
                      Info
 #endif
-            ) {
+              ) {
         }
 
         /**
@@ -79,11 +78,11 @@ namespace util::Logging {
         template<typename FormatString>
         Logger(const FormatString & subsystem, Level level) {
             vector<spdlog::sink_ptr> sinks;
-            sinks.push_back(make_shared<spdlog::sinks::stdout_color_sink_mt>());
+            sinks.push_back(std::make_shared<spdlog::sinks::stdout_color_sink_mt>());
             sinks.push_back(
-                make_shared<spdlog::sinks::basic_file_sink_mt>("swerve.log"));
+                std::make_shared<spdlog::sinks::basic_file_sink_mt>("swerve.log"));
             logger =
-                make_shared<spdlog::logger>(subsystem, begin(sinks), end(sinks));
+                std::make_shared<spdlog::logger>(subsystem, begin(sinks), end(sinks));
 
             setLevel(level);
         }
@@ -196,10 +195,10 @@ namespace util::Logging {
         }
     };
 
-    extern Logger::Ptr Main;
-    extern Logger::Ptr Config;
-    extern Logger::Ptr MC;
-    extern Logger::Ptr Planning;
+    extern Logger::SharedPtr Main;
+    extern Logger::SharedPtr Config;
+    extern Logger::SharedPtr MC;
+    extern Logger::SharedPtr Planning;
 
     void init_logging(spdlog::level::level_enum level);
 }

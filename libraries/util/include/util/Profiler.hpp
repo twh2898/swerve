@@ -6,6 +6,7 @@
 #include <vector>
 
 #include "Telemetry.hpp"
+#include "rclcpp/macros.hpp"
 
 #define R_DEF_CLOCK(PROFILER, VAR, NAME) auto VAR = (PROFILER).getClock(NAME)
 
@@ -19,12 +20,9 @@
 namespace util {
     using std::string;
     using std::vector;
-    using std::shared_ptr;
-    using std::make_shared;
 
     struct Clock {
-        using Ptr = shared_ptr<Clock>;
-        using ConstPtr = const shared_ptr<Clock>;
+        RCLCPP_SMART_PTR_DEFINITIONS(Clock)
 
         using clock = std::chrono::high_resolution_clock;
         using duration = clock::duration;
@@ -49,11 +47,13 @@ namespace util {
     };
 
     struct Profiler : public TelemetrySender {
-        vector<Clock::Ptr> clocks;
+        RCLCPP_SMART_PTR_DEFINITIONS(Profiler)
+
+        vector<Clock::SharedPtr> clocks;
 
         Profiler();
 
-        Clock::Ptr getClock(const string & name);
+        Clock::SharedPtr getClock(const string & name);
 
         json getTelemetry() const override;
     };

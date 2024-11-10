@@ -8,29 +8,28 @@
 #include <webots/PositionSensor.hpp>
 #include <webots/Robot.hpp>
 
+#include "rclcpp/macros.hpp"
 #include "base/Motor.hpp"
 #include "base/SwerveDrive.hpp"
 #include "util/Telemetry.hpp"
 
 namespace swerve {
     using std::string;
-    using std::shared_ptr;
     using util::TelemetrySender;
     using base::SwerveDrive;
     using json = util::json;
 
     class Platform : public TelemetrySender {
     public:
-        using Ptr = shared_ptr<Platform>;
-        using ConstPtr = const shared_ptr<Platform>;
+        RCLCPP_SMART_PTR_DEFINITIONS(Platform)
 
     private:
         int lastStep;
 
     public:
         webots::Robot robot;
-        SwerveDrive::Ptr rightDrive;
-        SwerveDrive::Ptr leftDrive;
+        SwerveDrive::SharedPtr rightDrive;
+        SwerveDrive::SharedPtr leftDrive;
         webots::GPS * gps;
         webots::InertialUnit * imu;
 

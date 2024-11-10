@@ -6,6 +6,7 @@
 #include <string>
 
 #include "json.hpp"
+#include "rclcpp/macros.hpp"
 
 namespace util {
     namespace chrono = std::chrono;
@@ -30,6 +31,10 @@ namespace util {
      * @brief UDP Telemetry Broadcaster.
      */
     class Telemetry {
+    public:
+        RCLCPP_SMART_PTR_DEFINITIONS(Telemetry)
+
+    private:
         int m_socket;
         sockaddr_in m_addr;
 
@@ -42,7 +47,7 @@ namespace util {
          *
          * @throw std::runtime_error
          */
-        Telemetry(int udpPort, string udpAddress);
+        Telemetry(int udpPort, const string & udpAddress);
 
         /**
          * @brief Send arbitrary telemetry data

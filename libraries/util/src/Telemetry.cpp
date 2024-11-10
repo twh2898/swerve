@@ -7,7 +7,7 @@
 namespace util {
     using std::runtime_error;
 
-    Telemetry::Telemetry(int udpPort, string udpAddress)
+    Telemetry::Telemetry(int udpPort, const string & udpAddress)
         : m_socket(socket(AF_INET, SOCK_DGRAM, 0)), m_addr() {
         if (m_socket == -1) {
             throw runtime_error("Could not create socket");

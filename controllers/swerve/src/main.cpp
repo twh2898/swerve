@@ -19,10 +19,12 @@ using namespace swerve;
 
 class State1 : public State {
 public:
+    RCLCPP_SMART_PTR_DEFINITIONS(State1)
+
     State1()
         : State("state1") {}
 
-    void step(const Platform::Ptr & plat, StateMachine * sm) override {
+    void step(const Platform::SharedPtr & plat, StateMachine * sm) override {
         const double * rpy = plat->imu->getRollPitchYaw();
         double z = rpy[2];
 
@@ -37,25 +39,29 @@ public:
 };
 
 class State2 : public State {
+public:
+    RCLCPP_SMART_PTR_DEFINITIONS(State2)
+
+private:
     double startTime;
 
 public:
     State2()
         : State("state2") {}
 
-    void enter(const Platform::Ptr & plat, StateMachine * sm) override {
+    void enter(const Platform::SharedPtr & plat, StateMachine * sm) override {
         plat->bike(0.25, 0.2);
         startTime = plat->robot.getTime();
     }
 
-    void step(const Platform::Ptr & plat, StateMachine * sm) override {
+    void step(const Platform::SharedPtr & plat, StateMachine * sm) override {
         if (plat->robot.getTime() - startTime >= 3) {
             sm->transition("end");
             return;
         }
     }
 
-    void exit(const Platform::Ptr & plat, StateMachine * sm) override {
+    void exit(const Platform::SharedPtr & plat, StateMachine * sm) override {
         plat->tank(0, 0);
     }
 };
@@ -76,17 +82,17 @@ int main() {
 
     Telemetry tel(config.telemetry.port, config.telemetry.address);
 
-    Platform::Ptr platform = make_shared<Platform>();
+    Platform::SharedPtr platform = Platform::make_shared();
     int time_step = config.sim.step;
     if (time_step < platform->robot.getBasicTimeStep())
         time_step = platform->robot.getBasicTimeStep();
     platform->enable(time_step);
 
-    State::Ptr state1 = make_shared<State1>();
-    State::Ptr state2 = make_shared<State2>();
+    State::SharedPtr state1 = State1::make_shared();
+    State::SharedPtr state2 = State2::make_shared();
 
-    vector<State::Ptr> states {state1, state2};
-    StateMachine::Ptr sm = make_shared<StateMachine>(platform, state2, states);
+    vector<State::SharedPtr> states {state1, state2};
+    StateMachine::SharedPtr sm = StateMachine::make_shared(platform, state2, states);
 
     Logging::Main->info("Initialization complete");
 

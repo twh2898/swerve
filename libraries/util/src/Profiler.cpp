@@ -1,7 +1,8 @@
 #include "util/Profiler.hpp"
 
 namespace util {
-    Clock::Clock(const string & name) : name(name) {
+    Clock::Clock(const string & name)
+        : name(name) {
         reset();
     }
 
@@ -20,13 +21,13 @@ namespace util {
 namespace util {
     Profiler::Profiler() {}
 
-    Clock::Ptr Profiler::getClock(const string & name) {
+    Clock::SharedPtr Profiler::getClock(const string & name) {
         for (auto & clock : clocks) {
             if (clock->name == name) {
                 return clock;
             }
         }
-        return clocks.emplace_back(make_shared<Clock>(name));
+        return clocks.emplace_back(Clock::make_shared(name));
     }
 
     json Profiler::getTelemetry() const {

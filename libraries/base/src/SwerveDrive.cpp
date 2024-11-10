@@ -1,7 +1,7 @@
 #include "base/SwerveDrive.hpp"
 
 namespace base {
-    SwerveDrive::SwerveDrive(const DriveMotor::Ptr & drive, const ServoMotor::Ptr & servo)
+    SwerveDrive::SwerveDrive(const DriveMotor::SharedPtr & drive, const ServoMotor::SharedPtr & servo)
         : drive(drive), servo(servo) {
     }
 

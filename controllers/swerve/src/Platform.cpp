@@ -5,16 +5,15 @@
 namespace swerve {
     using base::DriveMotor;
     using base::ServoMotor;
-    using std::make_shared;
 
-    static SwerveDrive::Ptr driveFromRobot(webots::Robot & robot,
-                                           const string & driveName) {
+    static SwerveDrive::SharedPtr driveFromRobot(webots::Robot & robot,
+                                                 const string & driveName) {
         auto * axisMotor = robot.getMotor(driveName + " axis motor");
         auto * wheelMotor = robot.getMotor(driveName + " wheel motor");
         auto * axisEncoder = robot.getPositionSensor(driveName + " axis sensor");
-        DriveMotor::Ptr drive = make_shared<DriveMotor>(wheelMotor);
-        ServoMotor::Ptr servo = make_shared<ServoMotor>(axisMotor, axisEncoder);
-        return make_shared<SwerveDrive>(drive, servo);
+        DriveMotor::SharedPtr drive = DriveMotor::make_shared(wheelMotor);
+        ServoMotor::SharedPtr servo = ServoMotor::make_shared(axisMotor, axisEncoder);
+        return SwerveDrive::make_shared(drive, servo);
     }
 
     Platform::Platform()

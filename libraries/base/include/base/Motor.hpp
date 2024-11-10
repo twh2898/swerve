@@ -4,17 +4,16 @@
 #include <webots/Motor.hpp>
 #include <webots/PositionSensor.hpp>
 
+#include "rclcpp/macros.hpp"
 #include "util/Telemetry.hpp"
 
 namespace base {
-    using std::shared_ptr;
     using util::TelemetrySender;
     using json = util::json;
 
     class DriveMotor : public TelemetrySender {
     public:
-        using Ptr = shared_ptr<DriveMotor>;
-        using ConstPtr = const shared_ptr<DriveMotor>;
+        RCLCPP_SMART_PTR_DEFINITIONS(DriveMotor)
 
     private:
         webots::Motor * motor;
@@ -37,8 +36,7 @@ namespace base {
 
     class ServoMotor : public TelemetrySender {
     public:
-        using Ptr = shared_ptr<ServoMotor>;
-        using ConstPtr = const shared_ptr<ServoMotor>;
+        RCLCPP_SMART_PTR_DEFINITIONS(ServoMotor)
 
     private:
         webots::Motor * motor;
