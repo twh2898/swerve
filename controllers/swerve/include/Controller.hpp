@@ -29,7 +29,14 @@ namespace swerve {
 
         virtual ~Controller() {}
 
-        virtual void update(double time) {}
+        virtual void update(double time) {
+            if (auto left = leftDrive.lock()) {
+                left->update(time);
+            }
+            if (auto right = rightDrive.lock()) {
+                right->update(time);
+            }
+        }
 
         virtual void spin(double power) = 0;
 
@@ -79,10 +86,12 @@ namespace swerve {
         void update(double time) override {
             if (auto left = leftDrive.lock()) {
                 left->setDrivePower(lRamp.getValue(time));
+                left->update(time);
             }
 
             if (auto right = rightDrive.lock()) {
                 right->setDrivePower(rRamp.getValue(time));
+                right->update(time);
             }
         }
 
