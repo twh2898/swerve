@@ -8,9 +8,10 @@
 #include <webots/PositionSensor.hpp>
 #include <webots/Robot.hpp>
 
-#include "rclcpp/macros.hpp"
+#include "Controller.hpp"
 #include "base/Motor.hpp"
 #include "base/SwerveDrive.hpp"
+#include "rclcpp/macros.hpp"
 #include "util/Telemetry.hpp"
 
 namespace swerve {
@@ -32,6 +33,7 @@ namespace swerve {
         SwerveDrive::SharedPtr leftDrive;
         webots::GPS * gps;
         webots::InertialUnit * imu;
+        Controller::SharedPtr controller;
 
         Platform();
 

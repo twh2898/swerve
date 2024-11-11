@@ -102,9 +102,15 @@ namespace swerve {
             {"imu", imuData},
         };
 
+        json controllerData;
+        if (controller) {
+            controllerData = controller->getTelemetry();
+        }
+
         return json {
             {"motor", motorData},
             {"sensors", sensorData},
+            {"controller", controllerData},
             {"time", robot.getTime()},
             {"dt", dt()},
         };

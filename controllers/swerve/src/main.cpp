@@ -29,10 +29,12 @@ public:
         double z = rpy[2];
 
         if (z < 1) {
-            plat->spin(-0.125);
+            plat->controller->spin(-0.125);
+            // plat->spin(-0.125);
         }
         else {
-            plat->spin(0);
+            // plat->spin(0);
+            plat->controller->spin(0);
             sm->transition("state2");
         }
     }
@@ -50,7 +52,9 @@ public:
         : State("state2") {}
 
     void enter(const Platform::SharedPtr & plat, StateMachine * sm) override {
-        plat->bike(0.25, 0.2);
+        // plat->bike(0.25, 0.2);
+        plat->controller->drive(0.7, 0);
+        plat->controller->spin(0.5);
         startTime = plat->robot.getTime();
     }
 
@@ -88,11 +92,13 @@ int main() {
         time_step = platform->robot.getBasicTimeStep();
     platform->enable(time_step);
 
+    platform->controller = TankController::make_shared(platform->leftDrive, platform->rightDrive);
+
     State::SharedPtr state1 = State1::make_shared();
     State::SharedPtr state2 = State2::make_shared();
 
     vector<State::SharedPtr> states {state1, state2};
-    StateMachine::SharedPtr sm = StateMachine::make_shared(platform, state2, states);
+    StateMachine::SharedPtr sm = StateMachine::make_shared(platform, state1, states);
 
     Logging::Main->info("Initialization complete");
 

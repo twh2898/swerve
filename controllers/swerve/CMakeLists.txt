@@ -7,6 +7,7 @@ set(TARGET swerve)
 
 set(HEADER_LIST
     util/Config.hpp
+    Controller.hpp
     Platform.hpp
     State.hpp
 )
