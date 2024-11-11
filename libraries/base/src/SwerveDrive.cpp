@@ -54,6 +54,10 @@ namespace base {
         return servo->getPosition();
     }
 
+    bool SwerveDrive::atSteerTarget(double tolerance) const {
+        return servo->atTarget(tolerance);
+    }
+
     double SwerveDrive::getMaxDriveVelocity() const {
         return drive->getMaxVelocity();
     }

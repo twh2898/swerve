@@ -1,6 +1,7 @@
 #include "base/Motor.hpp"
 
 #include <algorithm>
+#include <cmath>
 
 namespace base {
     DriveMotor::DriveMotor(webots::Motor * motor)
@@ -66,6 +67,10 @@ namespace base {
 
     double ServoMotor::getVelocity() const {
         return motor->getVelocity();
+    }
+
+    bool ServoMotor::atTarget(double tolerance) const {
+        return std::abs(getTarget() - getPosition()) <= tolerance;
     }
 
     json ServoMotor::getTelemetry() const {

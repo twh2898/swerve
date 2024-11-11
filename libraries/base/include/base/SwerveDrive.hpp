@@ -49,6 +49,8 @@ namespace base {
 
         double getSteer() const;
 
+        bool atSteerTarget(double tolerance = 0.01) const;
+
         double getMaxDriveVelocity() const;
 
         void setDriveVelocity(double velocity);
