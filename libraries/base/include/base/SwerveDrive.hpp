@@ -49,7 +49,7 @@ namespace base {
 
         double getSteer() const;
 
-        bool atSteerTarget(double tolerance = 0.01) const;
+        bool atSteerTarget(double tolerance = 0.1) const;
 
         double getMaxDriveVelocity() const;
 

@@ -58,7 +58,7 @@ namespace base {
 
         double getVelocity() const;
 
-        bool atTarget(double tolerance=0.01) const;
+        bool atTarget(double tolerance = 0.1) const;
 
         json getTelemetry() const override;
     };
