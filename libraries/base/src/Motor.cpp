@@ -1,5 +1,7 @@
 #include "base/Motor.hpp"
 
+#include <algorithm>
+
 namespace base {
     DriveMotor::DriveMotor(webots::Motor * motor)
         : motor(motor) {
@@ -12,10 +14,13 @@ namespace base {
     }
 
     void DriveMotor::setVelocity(double velocity) {
+        double max = getMaxVelocity();
+        velocity = std::clamp(velocity, -max, max);
         motor->setVelocity(velocity);
     }
 
     void DriveMotor::setPower(double power) {
+        power = std::clamp(power, -1.0, 1.0);
         setVelocity(power * getMaxVelocity());
     }
 
