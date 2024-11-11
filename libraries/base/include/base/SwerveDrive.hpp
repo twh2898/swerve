@@ -32,6 +32,8 @@ namespace base {
 
         double getSteer() const;
 
+        double getMaxDriveVelocity() const;
+
         void setDriveVelocity(double velocity);
 
         void setDrivePower(double power);

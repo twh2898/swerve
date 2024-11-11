@@ -25,6 +25,10 @@ namespace base {
         return servo->getPosition();
     }
 
+    double SwerveDrive::getMaxDriveVelocity() const {
+        return drive->getMaxVelocity();
+    }
+
     void SwerveDrive::setDriveVelocity(double velocity) {
         drive->setVelocity(velocity);
     }
