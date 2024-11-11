@@ -52,7 +52,7 @@ public:
 
     void enter(const Platform::SharedPtr & plat, StateMachine * sm) override {
         // plat->bike(0.25, 0.2);
-        plat->controller->drive(0.7, 0);
+        plat->controller->drive(0.7, 0.8);
         plat->controller->spin(0.5);
         startTime = plat->robot.getTime();
     }
@@ -86,8 +86,8 @@ int main() {
     Telemetry tel(config.telemetry.port, config.telemetry.address);
 
     MotorProfile mProfile {
-        config.controller.accel,
-        config.controller.accel,
+        driveAccel : config.controller.driveAccel,
+        steerAccel : config.controller.steerAccel,
     };
 
     Platform::SharedPtr platform = Platform::make_shared(mProfile);
@@ -96,13 +96,13 @@ int main() {
         time_step = platform->robot.getBasicTimeStep();
     platform->enable(time_step);
 
-    platform->controller = TankController::make_shared(platform->leftDrive, platform->rightDrive, config.controller.accel);
+    platform->controller = FullController::make_shared(platform->leftDrive, platform->rightDrive);
 
     State::SharedPtr state1 = State1::make_shared();
     State::SharedPtr state2 = State2::make_shared();
 
     vector<State::SharedPtr> states {state1, state2};
-    StateMachine::SharedPtr sm = StateMachine::make_shared(platform, state1, states);
+    StateMachine::SharedPtr sm = StateMachine::make_shared(platform, state2, states);
 
     Logging::Main->info("Initialization complete");
 

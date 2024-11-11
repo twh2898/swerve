@@ -5,7 +5,8 @@
         "step": -1
     },
     "controller": {
-        "accel": 1.0
+        "driveAccel": 1.0,
+        "steerAccel": 10.0
     },
     "telemetry": {
         "port": 9870,

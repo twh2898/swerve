@@ -40,10 +40,12 @@ namespace util {
         TEST_KEY(data, "controller")
         auto controllerConfig = data["controller"];
 
-        TEST_SUB_KEY(controllerConfig, "controller", "accel")
+        TEST_SUB_KEY(controllerConfig, "controller", "driveAccel")
+        TEST_SUB_KEY(controllerConfig, "controller", "steerAccel")
 
         ControllerConfig controller {
-            accel : controllerConfig["accel"],
+            driveAccel : controllerConfig["driveAccel"],
+            steerAccel : controllerConfig["steerAccel"],
         };
 
         TEST_KEY(data, "telemetry")

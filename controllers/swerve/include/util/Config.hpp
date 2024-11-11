@@ -28,7 +28,8 @@ namespace util {
     };
 
     struct ControllerConfig {
-        double accel;
+        double driveAccel;
+        double steerAccel;
     };
 
     struct Config {

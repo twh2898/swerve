@@ -146,12 +146,21 @@ namespace swerve {
             : Controller(leftDrive, rightDrive) {}
 
         void update(double time) override {
+            Controller::update(time);
         }
 
         void spin(double power) override {
         }
 
         void drive(double power, double direction) override {
+            if (auto left = leftDrive.lock()) {
+                left->setDrivePower(power);
+                left->setSteer(direction);
+            }
+            if (auto right = rightDrive.lock()) {
+                right->setDrivePower(power);
+                right->setSteer(direction);
+            }
         }
     };
 }
