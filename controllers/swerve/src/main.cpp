@@ -52,7 +52,7 @@ public:
 
     void enter(const Platform::SharedPtr & plat, StateMachine * sm) override {
         // plat->bike(0.25, 0.2);
-        plat->controller->drive(0.7, 0.8);
+        plat->controller->drive(0.0, 0.8);
         plat->controller->spin(0.5);
         startTime = plat->robot.getTime();
     }
@@ -62,6 +62,9 @@ public:
             sm->transition("end");
             return;
         }
+
+        bool shouldDrive = plat->leftDrive->atSteerTarget() && plat->rightDrive->atSteerTarget();
+        plat->controller->drive((shouldDrive ? 0.5 : 0.0), 0.8);
     }
 
     void exit(const Platform::SharedPtr & plat, StateMachine * sm) override {
