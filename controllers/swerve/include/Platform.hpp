@@ -18,6 +18,7 @@ namespace swerve {
     using std::string;
     using util::TelemetrySender;
     using base::SwerveDrive;
+    using base::MotorProfile;
     using json = util::json;
 
     class Platform : public TelemetrySender {
@@ -36,6 +37,8 @@ namespace swerve {
         Controller::SharedPtr controller;
 
         Platform();
+
+        Platform(const MotorProfile & profile);
 
         int step(int duration);
 

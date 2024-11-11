@@ -85,7 +85,12 @@ int main() {
 
     Telemetry tel(config.telemetry.port, config.telemetry.address);
 
-    Platform::SharedPtr platform = Platform::make_shared();
+    MotorProfile mProfile {
+        config.controller.accel,
+        config.controller.accel,
+    };
+
+    Platform::SharedPtr platform = Platform::make_shared(mProfile);
     int time_step = config.sim.step;
     if (time_step < platform->robot.getBasicTimeStep())
         time_step = platform->robot.getBasicTimeStep();

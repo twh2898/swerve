@@ -16,6 +16,17 @@ namespace swerve {
         return SwerveDrive::make_shared(drive, servo);
     }
 
+    static SwerveDrive::SharedPtr driveFromRobot(webots::Robot & robot,
+                                                 const string & driveName,
+                                                 const MotorProfile & profile) {
+        auto * axisMotor = robot.getMotor(driveName + " axis motor");
+        auto * wheelMotor = robot.getMotor(driveName + " wheel motor");
+        auto * axisEncoder = robot.getPositionSensor(driveName + " axis sensor");
+        DriveMotor::SharedPtr drive = DriveMotor::make_shared(wheelMotor);
+        ServoMotor::SharedPtr servo = ServoMotor::make_shared(axisMotor, axisEncoder);
+        return SwerveDrive::make_shared(drive, servo, profile);
+    }
+
     Platform::Platform()
         : robot(), lastStep(0.0) {
         gps = robot.getGPS("gps");
@@ -23,6 +34,15 @@ namespace swerve {
 
         rightDrive = driveFromRobot(robot, "right drive");
         leftDrive = driveFromRobot(robot, "left drive");
+    }
+
+    Platform::Platform(const MotorProfile & profile)
+        : robot(), lastStep(0.0) {
+        gps = robot.getGPS("gps");
+        imu = robot.getInertialUnit("imu");
+
+        rightDrive = driveFromRobot(robot, "right drive", profile);
+        leftDrive = driveFromRobot(robot, "left drive", profile);
     }
 
     int Platform::step(int duration) {
