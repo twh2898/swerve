@@ -35,8 +35,6 @@ namespace swerve {
 
         virtual void drive(double power, double direction) = 0;
 
-        virtual void primeDirection(double direction) {}
-
         json getTelemetry() const override {
             json leftData;
             if (auto left = leftDrive.lock()) {
@@ -127,6 +125,24 @@ namespace swerve {
             };
 
             return data;
+        }
+    };
+
+    class FullController : public Controller {
+    public:
+        RCLCPP_SMART_PTR_DEFINITIONS(FullController)
+
+    public:
+        FullController(const SwerveDrive::WeakPtr & leftDrive, const SwerveDrive::WeakPtr & rightDrive)
+            : Controller(leftDrive, rightDrive) {}
+
+        void update(double time) override {
+        }
+
+        void spin(double power) override {
+        }
+
+        void drive(double power, double direction) override {
         }
     };
 }
