@@ -4,6 +4,8 @@ set(UTIL_HEADER_LIST
     log.hpp
     PID.hpp
     Profiler.hpp
+    ramp.hpp
+    sim_time.hpp
     Telemetry.hpp
     XY.hpp
 )
@@ -13,6 +15,7 @@ set(UTIL_SOURCE_LIST
     log.cpp
     PID.cpp
     Profiler.cpp
+    sim_time.cpp
     Telemetry.cpp
 )
 list(TRANSFORM UTIL_SOURCE_LIST PREPEND "src/")
