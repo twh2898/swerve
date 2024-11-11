@@ -10,7 +10,7 @@ PROTO Drive [
   field SFFloat    axisMaxVelocity 20
   field SFFloat    wheelMaxVelocity 20
   field SFFloat    axisMaxTorque 10  # Using default of 10 until a better value is known
-  field SFFloat    wheelMaxTorque 2.0
+  field SFFloat    wheelMaxTorque 10
   field SFString   wheelContactMaterial "wheel"
 ]
 {
