@@ -41,6 +41,9 @@ namespace base {
         if (useProfile) {
             servoRamp.setTarget(steerTarget, lastTime);
         }
+        else {
+            servo->setTarget(steerTarget);
+        }
     }
 
     double SwerveDrive::getSteerTarget() const {
@@ -63,6 +66,9 @@ namespace base {
         driveTarget = power;
         if (useProfile) {
             driveRamp.setTarget(driveTarget, lastTime);
+        }
+        else {
+            drive->setPower(driveTarget);
         }
     }
 
