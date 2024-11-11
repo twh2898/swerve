@@ -27,10 +27,16 @@ namespace util {
         string address;
     };
 
+    struct ControllerConfig {
+        double accel;
+    };
+
     struct Config {
         json data;
 
         SimConfig sim;
+
+        ControllerConfig controller;
 
         TelemetryConfig telemetry;
 

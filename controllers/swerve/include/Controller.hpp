@@ -5,11 +5,15 @@
 #include "base/SwerveDrive.hpp"
 #include "rclcpp/macros.hpp"
 #include "util/Telemetry.hpp"
+#include "util/ramp.hpp"
+#include "util/sim_time.hpp"
 
 namespace swerve {
     using base::SwerveDrive;
     using util::TelemetrySender;
     using util::json;
+    using util::Ramp;
+    using sim_time::now;
 
     class Controller : public TelemetrySender {
     public:
@@ -25,9 +29,13 @@ namespace swerve {
 
         virtual ~Controller() {}
 
+        virtual void update(double time) {}
+
         virtual void spin(double power) = 0;
 
         virtual void drive(double power, double direction) = 0;
+
+        virtual void primeDirection(double direction) {}
 
         json getTelemetry() const override {
             json leftData;
@@ -52,35 +60,73 @@ namespace swerve {
         RCLCPP_SMART_PTR_DEFINITIONS(TankController)
 
     private:
-        double lastDrivePower;
-        double lastSpin;
+        double spinRate;
+        double power;
+        Ramp lRamp;
+        Ramp rRamp;
 
-        void driveAndSpin(double power, double spinPower) {
-            double leftPower = std::clamp(power - spinPower, -1.0, 1.0);
-            double rightPower = std::clamp(power + spinPower, -1.0, 1.0);
-
-            if (auto left = leftDrive.lock()) {
-                left->setDrivePower(leftPower);
-                left->setSteer(0);
-            }
-
-            if (auto right = rightDrive.lock()) {
-                right->setDrivePower(rightPower);
-                right->setSteer(0);
-            }
+        void updateTarget() {
+            lRamp.setTarget(power - spinRate, now());
+            rRamp.setTarget(power + spinRate, now());
         }
 
     public:
-        using Controller::Controller;
+        TankController(const SwerveDrive::WeakPtr & leftDrive, const SwerveDrive::WeakPtr & rightDrive, double accel = 1.0)
+            : Controller(leftDrive, rightDrive),
+              spinRate(0.0),
+              power(0.0),
+              lRamp(accel, now()),
+              rRamp(accel, now()) {}
 
-        void spin(double power) override {
-            driveAndSpin(lastDrivePower, power);
-            lastSpin = power;
+        void update(double time) override {
+            if (auto left = leftDrive.lock()) {
+                left->setDrivePower(lRamp.getValue(time));
+            }
+
+            if (auto right = rightDrive.lock()) {
+                right->setDrivePower(rRamp.getValue(time));
+            }
         }
 
+        void setAccel(double accel) {
+            lRamp.setSlope(accel, sim_time::now());
+            rRamp.setSlope(accel, sim_time::now());
+        }
+
+        void spin(double rate) override {
+            spinRate = rate;
+            updateTarget();
+        }
+
+        // direction is ignored for tank controller
         void drive(double power, double direction) override {
-            driveAndSpin(power, lastSpin);
-            lastDrivePower = power;
+            this->power = power;
+            updateTarget();
+        }
+
+        json getTelemetry() const override {
+            json data = Controller::getTelemetry();
+
+            data["spin"] = spinRate;
+            data["power"] = power;
+
+            data["leftRamp"] = {
+                {"start", lRamp.getStart()},
+                {"target", lRamp.getTarget()},
+                {"slope", lRamp.getSlope()},
+                {"value", lRamp.getValue(now())},
+                {"startTime", lRamp.getStartTime()},
+            };
+
+            data["rightRamp"] = {
+                {"start", rRamp.getStart()},
+                {"target", rRamp.getTarget()},
+                {"slope", rRamp.getSlope()},
+                {"value", rRamp.getValue(now())},
+                {"startTime", rRamp.getStartTime()},
+            };
+
+            return data;
         }
     };
 }

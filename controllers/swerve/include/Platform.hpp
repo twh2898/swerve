@@ -41,11 +41,15 @@ namespace swerve {
 
         int getSamplingPeriod() const;
 
+        double getTime() const;
+
         double dt() const;
 
         void enable(int samplingPeriod);
 
         void disable();
+
+        void update();
 
         void tank(double leftPower, double rightPower);
 

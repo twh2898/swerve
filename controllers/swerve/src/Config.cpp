@@ -37,6 +37,15 @@ namespace util {
             step : simConfig["step"],
         };
 
+        TEST_KEY(data, "controller")
+        auto controllerConfig = data["controller"];
+
+        TEST_SUB_KEY(controllerConfig, "controller", "accel")
+
+        ControllerConfig controller {
+            accel : controllerConfig["accel"],
+        };
+
         TEST_KEY(data, "telemetry")
         auto telemConfig = data["telemetry"];
 
@@ -51,6 +60,7 @@ namespace util {
         return Config {
             data : data,
             sim : sim,
+            controller : controller,
             telemetry : telem,
         };
     }

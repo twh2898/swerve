@@ -12,6 +12,7 @@ using namespace webots;
 #include "util/Profiler.hpp"
 #include "util/Telemetry.hpp"
 #include "util/log.hpp"
+#include "util/sim_time.hpp"
 
 using namespace std;
 using namespace util;
@@ -30,10 +31,8 @@ public:
 
         if (z < 1) {
             plat->controller->spin(-0.125);
-            // plat->spin(-0.125);
         }
         else {
-            // plat->spin(0);
             plat->controller->spin(0);
             sm->transition("state2");
         }
@@ -92,7 +91,7 @@ int main() {
         time_step = platform->robot.getBasicTimeStep();
     platform->enable(time_step);
 
-    platform->controller = TankController::make_shared(platform->leftDrive, platform->rightDrive);
+    platform->controller = TankController::make_shared(platform->leftDrive, platform->rightDrive, config.controller.accel);
 
     State::SharedPtr state1 = State1::make_shared();
     State::SharedPtr state2 = State2::make_shared();
@@ -119,8 +118,11 @@ int main() {
 
         clkSim->tick();
 
+        sim_time::setTime(platform->getTime());
+
         R_PROFILE_STEP(clkPlan, {
             sm->step();
+            platform->update();
         });
 
         R_PROFILE_STEP(clkTelem, {

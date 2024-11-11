@@ -34,6 +34,10 @@ namespace swerve {
         return lastStep;
     }
 
+    double Platform::getTime() const {
+        return robot.getTime();
+    }
+
     double Platform::dt() const {
         return (double)lastStep / 1000.0;
     }
@@ -50,6 +54,13 @@ namespace swerve {
         imu->disable();
         rightDrive->disable();
         leftDrive->disable();
+    }
+
+    void Platform::update() {
+        double now = getTime();
+        if (controller) {
+            controller->update(now);
+        }
     }
 
     void Platform::tank(double leftPower, double rightPower) {

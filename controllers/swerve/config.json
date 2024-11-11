@@ -4,6 +4,9 @@
         "stop": -1,
         "step": -1
     },
+    "controller": {
+        "accel": 1.0
+    },
     "telemetry": {
         "port": 9870,
         "address": "0.0.0.0"
