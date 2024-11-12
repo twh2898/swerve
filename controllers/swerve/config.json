@@ -5,7 +5,7 @@
         "step": -1
     },
     "controller": {
-        "driveAccel": 1.0,
+        "driveAccel": 2.0,
         "steerAccel": 10.0
     },
     "telemetry": {

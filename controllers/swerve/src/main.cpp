@@ -64,7 +64,7 @@ public:
         }
 
         bool shouldDrive = plat->leftDrive->atSteerTarget() && plat->rightDrive->atSteerTarget();
-        plat->controller->drive((shouldDrive ? 0.5 : 0.0), 0.8);
+        plat->controller->drive((shouldDrive ? 0.7 : 0.0), 0.8);
     }
 
     void exit(const Platform::SharedPtr & plat, StateMachine * sm) override {
