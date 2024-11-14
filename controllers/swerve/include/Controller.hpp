@@ -20,14 +20,13 @@ namespace swerve {
     public:
         RCLCPP_SMART_PTR_ALIASES_ONLY(Controller)
 
-    private:
-        double cmdSpin;
-        double cmdPower;
-        double cmdDirection;
-
     protected:
         SwerveDrive::WeakPtr leftDrive;
         SwerveDrive::WeakPtr rightDrive;
+
+        double cmdSpin;
+        double cmdPower;
+        double cmdDirection;
 
     public:
         Controller(const SwerveDrive::WeakPtr & leftDrive, const SwerveDrive::WeakPtr & rightDrive)
@@ -104,8 +103,8 @@ namespace swerve {
         Ramp rRamp;
 
         void updateTarget() {
-            lRamp.setTarget(getPower() - getSpin(), now());
-            rRamp.setTarget(getPower() + getSpin(), now());
+            lRamp.setTarget(cmdPower - cmdSpin, now());
+            rRamp.setTarget(cmdPower + cmdSpin, now());
         }
 
     public:
@@ -162,19 +161,19 @@ namespace swerve {
 
     private:
         void updateTarget() {
-            double dirmod = std::sin(getDirection()) * M_PI_4 * getSpin();
+            double dirmod = std::sin(cmdDirection) * M_PI_4 * cmdSpin;
 
             if (auto left = leftDrive.lock()) {
-                float leftPower = getPower() + getSpin() * dirmod;
+                float leftPower = cmdPower + cmdSpin * dirmod;
                 left->setDrivePower(leftPower);
-                left->setSteer(getDirection() + dirmod);
-                // left->setSteer(getDirection());
+                left->setSteer(cmdDirection + dirmod);
+                // left->setSteer(cmdDirection);
             }
             if (auto right = rightDrive.lock()) {
-                float rightPower = getPower() - getSpin() * dirmod;
+                float rightPower = cmdPower - cmdSpin * dirmod;
                 right->setDrivePower(rightPower);
-                right->setSteer(getDirection() - dirmod);
-                // right->setSteer(getDirection());
+                right->setSteer(cmdDirection - dirmod);
+                // right->setSteer(cmdDirection);
             }
         }
 
