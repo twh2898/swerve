@@ -5,23 +5,9 @@ set(TARGET swerve)
 ## Controller
 ## -----------------------------------------------------------------------------
 
-set(HEADER_LIST
-    util/Config.hpp
-    Controller.hpp
-    Platform.hpp
-    Program.hpp
-    State.hpp
-)
-# list(TRANSFORM HEADER_LIST PREPEND "include/${TARGET}/")
-list(TRANSFORM HEADER_LIST PREPEND "include/")
+file(GLOB HEADER_LIST include/**/*.hpp)
 
-set(SOURCE_LIST
-    Config.cpp
-    main.cpp
-    Platform.cpp
-    State.cpp
-)
-list(TRANSFORM SOURCE_LIST PREPEND "src/")
+file(GLOB SOURCE_LIST src/*.cpp)
 
 add_executable(${TARGET}
     ${SOURCE_LIST}

@@ -1,26 +1,10 @@
 set(UTIL_TARGET util)
 
-set(UTIL_HEADER_LIST
-    log.hpp
-    PID.hpp
-    Profiler.hpp
-    ramp.hpp
-    sim_time.hpp
-    Telemetry.hpp
-    XY.hpp
-)
-list(TRANSFORM UTIL_HEADER_LIST PREPEND "include/${UTIL_TARGET}/")
+file(GLOB HEADER_LIST include/**/*.hpp)
 
-set(UTIL_SOURCE_LIST
-    log.cpp
-    PID.cpp
-    Profiler.cpp
-    sim_time.cpp
-    Telemetry.cpp
-)
-list(TRANSFORM UTIL_SOURCE_LIST PREPEND "src/")
+file(GLOB SOURCE_LIST src/*.cpp)
 
-add_library(${UTIL_TARGET} OBJECT ${UTIL_SOURCE_LIST} ${UTIL_HEADER_LIST} include/rclcpp/macros.hpp)
+add_library(${UTIL_TARGET} OBJECT ${SOURCE_LIST} ${HEADER_LIST} include/rclcpp/macros.hpp)
 
 target_include_directories(${UTIL_TARGET} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 

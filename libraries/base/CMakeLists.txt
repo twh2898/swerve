@@ -1,18 +1,10 @@
 set(BASE_TARGET base)
 
-set(BASE_HEADER_LIST
-    Motor.hpp
-    SwerveDrive.hpp
-)
-list(TRANSFORM BASE_HEADER_LIST PREPEND "include/${BASE_TARGET}/")
+file(GLOB HEADER_LIST include/**/*.hpp)
 
-set(BASE_SOURCE_LIST
-    Motor.cpp
-    SwerveDrive.cpp
-)
-list(TRANSFORM BASE_SOURCE_LIST PREPEND "src/")
+file(GLOB SOURCE_LIST src/*.cpp)
 
-add_library(${BASE_TARGET} OBJECT ${BASE_SOURCE_LIST} ${BASE_HEADER_LIST})
+add_library(${BASE_TARGET} OBJECT ${SOURCE_LIST} ${HEADER_LIST})
 
 target_include_directories(${BASE_TARGET} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
