@@ -1,6 +1,7 @@
 #pragma once
 
 #include <algorithm>
+#include <cmath>
 
 #include "base/SwerveDrive.hpp"
 #include "rclcpp/macros.hpp"
@@ -141,6 +142,28 @@ namespace swerve {
     public:
         RCLCPP_SMART_PTR_DEFINITIONS(FullController)
 
+    private:
+        double spinRate;
+        double power;
+        double direction;
+
+        void updateTarget() {
+            double dirmod = std::sin(direction) * M_PI_4 * spinRate;
+
+            if (auto left = leftDrive.lock()) {
+                float leftPower = power + spinRate * dirmod;
+                left->setDrivePower(leftPower);
+                left->setSteer(direction + dirmod);
+                // left->setSteer(direction);
+            }
+            if (auto right = rightDrive.lock()) {
+                float rightPower = power - spinRate * dirmod;
+                right->setDrivePower(rightPower);
+                right->setSteer(direction - dirmod);
+                // right->setSteer(direction);
+            }
+        }
+
     public:
         FullController(const SwerveDrive::WeakPtr & leftDrive, const SwerveDrive::WeakPtr & rightDrive)
             : Controller(leftDrive, rightDrive) {}
@@ -150,17 +173,14 @@ namespace swerve {
         }
 
         void spin(double power) override {
+            spinRate = power;
+            updateTarget();
         }
 
         void drive(double power, double direction) override {
-            if (auto left = leftDrive.lock()) {
-                left->setDrivePower(power);
-                left->setSteer(direction);
-            }
-            if (auto right = rightDrive.lock()) {
-                right->setDrivePower(power);
-                right->setSteer(direction);
-            }
+            this->power = power;
+            this->direction = direction;
+            updateTarget();
         }
     };
 }
