@@ -20,13 +20,18 @@ namespace swerve {
     public:
         RCLCPP_SMART_PTR_ALIASES_ONLY(Controller)
 
+    private:
+        double cmdSpin;
+        double cmdPower;
+        double cmdDirection;
+
     protected:
         SwerveDrive::WeakPtr leftDrive;
         SwerveDrive::WeakPtr rightDrive;
 
     public:
         Controller(const SwerveDrive::WeakPtr & leftDrive, const SwerveDrive::WeakPtr & rightDrive)
-            : leftDrive(leftDrive), rightDrive(rightDrive) {}
+            : leftDrive(leftDrive), rightDrive(rightDrive), cmdSpin(0.0), cmdPower(0.0), cmdDirection(0.0) {}
 
         virtual ~Controller() {}
 
@@ -39,9 +44,35 @@ namespace swerve {
             }
         }
 
-        virtual void spin(double power) = 0;
+        double getSpin() const {
+            return cmdSpin;
+        }
 
-        virtual void drive(double power, double direction) = 0;
+        void setSpin(double spin) {
+            cmdSpin = spin;
+        }
+
+        double getPower() const {
+            return cmdPower;
+        }
+
+        void setPower(double power) {
+            cmdPower = power;
+        }
+
+        double getDirection() const {
+            return cmdDirection;
+        }
+
+        void setDirection(double direction) {
+            cmdDirection = direction;
+        }
+
+        void drive(double power, double direction, double spin) {
+            cmdPower = power;
+            cmdDirection = direction;
+            cmdSpin = spin;
+        }
 
         json getTelemetry() const override {
             json leftData;
@@ -57,6 +88,9 @@ namespace swerve {
             return json {
                 {"left", leftData},
                 {"right", rightData},
+                {"spin", getSpin()},
+                {"power", getPower()},
+                {"direction", getDirection()},
             };
         }
     };
@@ -66,25 +100,23 @@ namespace swerve {
         RCLCPP_SMART_PTR_DEFINITIONS(TankController)
 
     private:
-        double spinRate;
-        double power;
         Ramp lRamp;
         Ramp rRamp;
 
         void updateTarget() {
-            lRamp.setTarget(power - spinRate, now());
-            rRamp.setTarget(power + spinRate, now());
+            lRamp.setTarget(getPower() - getSpin(), now());
+            rRamp.setTarget(getPower() + getSpin(), now());
         }
 
     public:
         TankController(const SwerveDrive::WeakPtr & leftDrive, const SwerveDrive::WeakPtr & rightDrive, double accel = 1.0)
             : Controller(leftDrive, rightDrive),
-              spinRate(0.0),
-              power(0.0),
               lRamp(accel, now()),
               rRamp(accel, now()) {}
 
         void update(double time) override {
+            updateTarget();
+
             if (auto left = leftDrive.lock()) {
                 left->setDrivePower(lRamp.getValue(time));
                 left->update(time);
@@ -101,22 +133,8 @@ namespace swerve {
             rRamp.setSlope(accel, sim_time::now());
         }
 
-        void spin(double rate) override {
-            spinRate = rate;
-            updateTarget();
-        }
-
-        // direction is ignored for tank controller
-        void drive(double power, double direction) override {
-            this->power = power;
-            updateTarget();
-        }
-
         json getTelemetry() const override {
             json data = Controller::getTelemetry();
-
-            data["spin"] = spinRate;
-            data["power"] = power;
 
             data["leftRamp"] = {
                 {"start", lRamp.getStart()},
@@ -143,24 +161,20 @@ namespace swerve {
         RCLCPP_SMART_PTR_DEFINITIONS(FullController)
 
     private:
-        double spinRate;
-        double power;
-        double direction;
-
         void updateTarget() {
-            double dirmod = std::sin(direction) * M_PI_4 * spinRate;
+            double dirmod = std::sin(getDirection()) * M_PI_4 * getSpin();
 
             if (auto left = leftDrive.lock()) {
-                float leftPower = power + spinRate * dirmod;
+                float leftPower = getPower() + getSpin() * dirmod;
                 left->setDrivePower(leftPower);
-                left->setSteer(direction + dirmod);
-                // left->setSteer(direction);
+                left->setSteer(getDirection() + dirmod);
+                // left->setSteer(getDirection());
             }
             if (auto right = rightDrive.lock()) {
-                float rightPower = power - spinRate * dirmod;
+                float rightPower = getPower() - getSpin() * dirmod;
                 right->setDrivePower(rightPower);
-                right->setSteer(direction - dirmod);
-                // right->setSteer(direction);
+                right->setSteer(getDirection() - dirmod);
+                // right->setSteer(getDirection());
             }
         }
 
@@ -169,18 +183,9 @@ namespace swerve {
             : Controller(leftDrive, rightDrive) {}
 
         void update(double time) override {
+            updateTarget();
+
             Controller::update(time);
-        }
-
-        void spin(double power) override {
-            spinRate = power;
-            updateTarget();
-        }
-
-        void drive(double power, double direction) override {
-            this->power = power;
-            this->direction = direction;
-            updateTarget();
         }
     };
 }

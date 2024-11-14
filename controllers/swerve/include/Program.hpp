@@ -14,7 +14,7 @@ namespace swerve {
             : State("spin") {}
 
         void enter(const Platform::SharedPtr & plat, StateMachine * sm) override {
-            plat->controller->spin(-0.125);
+            plat->controller->setSpin(-0.125);
         }
 
         void step(const Platform::SharedPtr & plat, StateMachine * sm) override {
@@ -28,7 +28,7 @@ namespace swerve {
         }
 
         void exit(const Platform::SharedPtr & plat, StateMachine * sm) override {
-            plat->controller->spin(0);
+            plat->controller->setSpin(0);
         }
     };
 
@@ -40,7 +40,7 @@ namespace swerve {
             : State("align") {}
 
         void enter(const Platform::SharedPtr & plat, StateMachine * sm) override {
-            plat->controller->drive(0.0, 3.14 / 2);
+            plat->controller->drive(0.0, 3.14 / 2, 0.0);
         }
 
         void step(const Platform::SharedPtr & plat, StateMachine * sm) override {
@@ -65,10 +65,8 @@ namespace swerve {
         void enter(const Platform::SharedPtr & plat, StateMachine * sm) override {
             startTime = plat->getTime();
 
-            // plat->controller->drive(0.7, 3.14/2);
-            plat->controller->drive(0.0, 0);
-            plat->controller->spin(0.5);
-            // plat->controller->spin(0.0);
+            // plat->controller->drive(0.7, 3.14/2, 0.0);
+            plat->controller->drive(0.0, 0.0, 0.5);
         }
 
         void step(const Platform::SharedPtr & plat, StateMachine * sm) override {
@@ -79,7 +77,7 @@ namespace swerve {
         }
 
         void exit(const Platform::SharedPtr & plat, StateMachine * sm) override {
-            plat->controller->drive(0, 0);
+            plat->controller->drive(0, 0, 0);
         }
     };
 
@@ -129,12 +127,11 @@ namespace swerve {
 
             auto & currStep = mission.at(stepIndex);
 
-            plat->controller->drive(currStep.power, currStep.direction);
-            plat->controller->spin(currStep.spin);
+            plat->controller->drive(currStep.power, currStep.direction, currStep.spin);
         }
 
         void exit(const Platform::SharedPtr & plat, StateMachine * sm) override {
-            plat->controller->drive(0, 0);
+            plat->controller->drive(0, 0, 0);
         }
     };
 }
