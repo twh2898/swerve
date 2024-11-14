@@ -9,6 +9,7 @@ set(HEADER_LIST
     util/Config.hpp
     Controller.hpp
     Platform.hpp
+    Program.hpp
     State.hpp
 )
 # list(TRANSFORM HEADER_LIST PREPEND "include/${TARGET}/")

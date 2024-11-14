@@ -7,6 +7,7 @@ using namespace webots;
 #include <vector>
 
 #include "Platform.hpp"
+#include "Program.hpp"
 #include "State.hpp"
 #include "util/Config.hpp"
 #include "util/Profiler.hpp"
@@ -17,60 +18,6 @@ using namespace webots;
 using namespace std;
 using namespace util;
 using namespace swerve;
-
-class State1 : public State {
-public:
-    RCLCPP_SMART_PTR_DEFINITIONS(State1)
-
-    State1()
-        : State("state1") {}
-
-    void step(const Platform::SharedPtr & plat, StateMachine * sm) override {
-        const double * rpy = plat->imu->getRollPitchYaw();
-        double z = rpy[2];
-
-        if (z < 1) {
-            plat->controller->spin(-0.125);
-        }
-        else {
-            plat->controller->spin(0);
-            sm->transition("state2");
-        }
-    }
-};
-
-class State2 : public State {
-public:
-    RCLCPP_SMART_PTR_DEFINITIONS(State2)
-
-private:
-    double startTime;
-
-public:
-    State2()
-        : State("state2") {}
-
-    void enter(const Platform::SharedPtr & plat, StateMachine * sm) override {
-        // plat->bike(0.25, 0.2);
-        plat->controller->drive(0.0, 0.8);
-        plat->controller->spin(0.5);
-        startTime = plat->robot.getTime();
-    }
-
-    void step(const Platform::SharedPtr & plat, StateMachine * sm) override {
-        if (plat->robot.getTime() - startTime >= 3) {
-            sm->transition("end");
-            return;
-        }
-
-        bool shouldDrive = plat->leftDrive->atSteerTarget() && plat->rightDrive->atSteerTarget();
-        plat->controller->drive((shouldDrive ? 0.7 : 0.0), 0.8);
-    }
-
-    void exit(const Platform::SharedPtr & plat, StateMachine * sm) override {
-        plat->tank(0, 0);
-    }
-};
 
 int main() {
     Logging::init_logging(spdlog::level::trace);
@@ -101,11 +48,11 @@ int main() {
 
     platform->controller = FullController::make_shared(platform->leftDrive, platform->rightDrive);
 
-    State::SharedPtr state1 = State1::make_shared();
-    State::SharedPtr state2 = State2::make_shared();
+    State::SharedPtr alignState = AlignWheelsState::make_shared();
+    State::SharedPtr driveState = DriveCurveState::make_shared();
 
-    vector<State::SharedPtr> states {state1, state2};
-    StateMachine::SharedPtr sm = StateMachine::make_shared(platform, state2, states);
+    vector<State::SharedPtr> states {alignState, driveState};
+    StateMachine::SharedPtr sm = StateMachine::make_shared(platform, alignState, states);
 
     Logging::Main->info("Initialization complete");
 
