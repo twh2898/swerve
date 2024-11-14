@@ -100,11 +100,12 @@ namespace swerve {
         void enter(const Platform::SharedPtr & plat, StateMachine * sm) override {
             startTime = plat->getTime();
             if (mission.empty()) {
+                util::Logging::Planning->warning("Mission is empty");
                 sm->transition("end");
                 return;
             }
             stepEnd = startTime + mission.at(0).duration;
-            util::Logging::MC->info("Mission activating stage {} / {}", stepIndex, mission.size());
+            util::Logging::Planning->info("Mission activating stage {} ({} / {})", mission.at(stepIndex).name.value_or("NO_NAME"), stepIndex, mission.size());
         }
 
         void step(const Platform::SharedPtr & plat, StateMachine * sm) override {
@@ -115,13 +116,14 @@ namespace swerve {
 
             while (plat->getTime() >= stepEnd) {
                 stepIndex++;
-                util::Logging::MC->info("Mission activating stage {} / {}", stepIndex, mission.size());
 
                 if (stepIndex >= mission.size()) {
+                    util::Logging::Planning->info("End mission");
                     sm->transition("end");
                     return;
                 }
 
+                util::Logging::Planning->info("Mission activating stage {} ({} / {})", mission.at(stepIndex).name.value_or("NO_NAME"), stepIndex, mission.size());
                 stepEnd += mission.at(stepIndex).duration;
             }
 

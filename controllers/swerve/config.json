@@ -14,12 +14,14 @@
     },
     "mission": [
         {
+            "name": "Forwards",
             "power": 0.5,
             "direction": 0.0,
             "spin": 0.0,
             "duration": 1.0
         },
         {
+            "name": "Backwards",
             "power": -0.5,
             "direction": 0.0,
             "spin": 0.0,
