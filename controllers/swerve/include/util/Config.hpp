@@ -2,6 +2,7 @@
 
 #include <exception>
 #include <string>
+#include <vector>
 
 #include "json.hpp"
 
@@ -9,7 +10,7 @@ namespace util {
     using json = nlohmann::json;
 
     using std::string;
-    using std::map;
+    using std::vector;
 
     class ConfigLoadException : public std::runtime_error {
     public:
@@ -32,6 +33,13 @@ namespace util {
         double steerAccel;
     };
 
+    struct Mission {
+        double power;
+        double direction;
+        double spin;
+        double duration;
+    };
+
     struct Config {
         json data;
 
@@ -40,6 +48,8 @@ namespace util {
         ControllerConfig controller;
 
         TelemetryConfig telemetry;
+
+        vector<Mission> mission;
 
         static Config fromFile(const string & file);
     };

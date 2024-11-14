@@ -50,9 +50,15 @@ int main() {
 
     State::SharedPtr alignState = AlignWheelsState::make_shared();
     State::SharedPtr driveState = DriveCurveState::make_shared();
+    State::SharedPtr missionState = MissionState::make_shared(config.mission);
 
     vector<State::SharedPtr> states {alignState, driveState};
-    StateMachine::SharedPtr sm = StateMachine::make_shared(platform, alignState, states);
+    auto & startState = alignState;
+    if (!config.mission.empty()) {
+        states.push_back(missionState);
+        startState = missionState;
+    }
+    StateMachine::SharedPtr sm = StateMachine::make_shared(platform, startState, states);
 
     Logging::Main->info("Initialization complete");
 

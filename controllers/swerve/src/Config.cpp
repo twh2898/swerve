@@ -59,11 +59,29 @@ namespace util {
             address : telemConfig["address"],
         };
 
+        TEST_KEY(data, "mission")
+        auto missionConfig = data["mission"];
+
+        vector<Mission> mission;
+        for (auto & step : missionConfig) {
+            TEST_KEY(step, "power")
+            TEST_KEY(step, "direction")
+            TEST_KEY(step, "spin")
+            TEST_KEY(step, "duration")
+            mission.push_back({
+                power : step["power"],
+                direction : step["direction"],
+                spin : step["spin"],
+                duration : step["duration"],
+            });
+        }
+
         return Config {
             data : data,
             sim : sim,
             controller : controller,
             telemetry : telem,
+            mission : mission,
         };
     }
 }
