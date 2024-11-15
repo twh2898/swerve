@@ -77,7 +77,7 @@ namespace swerve {
         }
 
         void exit(const Platform::SharedPtr & plat, StateMachine * sm) override {
-            plat->controller->drive(0, 0, 0);
+            plat->controller->drive(0, plat->controller->getDirection(), 0);
         }
     };
 
@@ -103,7 +103,7 @@ namespace swerve {
                 return;
             }
             stepEnd = startTime + mission.at(0).duration;
-            util::Logging::Planning->info("Mission activating stage {} ({} / {})", mission.at(stepIndex).name.value_or("NO_NAME"), stepIndex, mission.size());
+            util::Logging::Planning->info("Mission activating stage {} / {}", stepIndex, mission.size());
         }
 
         void step(const Platform::SharedPtr & plat, StateMachine * sm) override {
@@ -121,7 +121,7 @@ namespace swerve {
                     return;
                 }
 
-                util::Logging::Planning->info("Mission activating stage {} ({} / {})", mission.at(stepIndex).name.value_or("NO_NAME"), stepIndex, mission.size());
+                util::Logging::Planning->info("Mission activating stage {} / {}", stepIndex, mission.size());
                 stepEnd += mission.at(stepIndex).duration;
             }
 
@@ -131,7 +131,7 @@ namespace swerve {
         }
 
         void exit(const Platform::SharedPtr & plat, StateMachine * sm) override {
-            plat->controller->drive(0, 0, 0);
+            plat->controller->drive(0, plat->controller->getDirection(), 0);
         }
     };
 }

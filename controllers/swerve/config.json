@@ -12,18 +12,55 @@
         "port": 9870,
         "address": "0.0.0.0"
     },
-    "mission": [
-        {
-            "power": 0.0,
-            "direction": 0.0,
-            "spin": 0.0,
-            "duration": 0.3
-        },
-        {
-            "power": 0.0,
-            "direction": 3.14,
-            "spin": 0.0,
-            "duration": 1.0
-        }
-    ]
+    "mission": "c",
+    "missions": {
+        "a": [
+            {
+                "power": 1.0,
+                "direction": 0.0,
+                "spin": 0.0,
+                "duration": 0.3
+            },
+            {
+                "power": 0.0,
+                "direction": 1.57,
+                "spin": 0.0,
+                "duration": 1.0
+            }
+        ],
+        "b": [
+            {
+                "power": 0.0,
+                "direction": 1.57,
+                "spin": 0.0,
+                "duration": 0.5
+            },
+            {
+                "power": 1.0,
+                "direction": 1.57,
+                "spin": 0.0,
+                "duration": 0.3
+            }
+        ],
+        "c": [
+            {
+                "power": 0.0,
+                "direction": 0,
+                "spin": 0.3,
+                "duration": 1.0
+            },
+            {
+                "power": 0.0,
+                "direction": 1.57,
+                "spin": 0.0,
+                "duration": 0.5
+            },
+            {
+                "power": 0.0,
+                "direction": 1.57,
+                "spin": 0.3,
+                "duration": 1.0
+            }
+        ]
+    }
 }

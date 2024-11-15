@@ -60,20 +60,24 @@ namespace util {
         };
 
         TEST_KEY(data, "mission")
-        auto missionConfig = data["mission"];
+        string missionName = data["mission"];
+
+        TEST_KEY(data, "missions")
+        auto allMissions = data["missions"];
+
+        if (!allMissions.contains(missionName)) {
+            throw ConfigLoadException("Mission name does not exist");
+        }
+
+        auto missionConfig = allMissions[missionName];
 
         vector<Mission> mission;
         for (auto & step : missionConfig) {
-            optional<string> name = std::nullopt;
-            if (step.contains("name")) {
-                name = optional<string>{step["name"]};
-            }
             TEST_KEY(step, "power")
             TEST_KEY(step, "direction")
             TEST_KEY(step, "spin")
             TEST_KEY(step, "duration")
             mission.push_back({
-                name : name,
                 power : step["power"],
                 direction : step["direction"],
                 spin : step["spin"],

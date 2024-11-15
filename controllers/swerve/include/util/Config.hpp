@@ -1,7 +1,6 @@
 #pragma once
 
 #include <exception>
-#include <optional>
 #include <string>
 #include <vector>
 
@@ -12,7 +11,6 @@ namespace util {
 
     using std::string;
     using std::vector;
-    using std::optional;
 
     class ConfigLoadException : public std::runtime_error {
     public:
@@ -36,7 +34,6 @@ namespace util {
     };
 
     struct Mission {
-        optional<string> name;
         double power;
         double direction;
         double spin;

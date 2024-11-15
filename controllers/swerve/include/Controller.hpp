@@ -164,13 +164,13 @@ namespace swerve {
             double dirmod = std::sin(cmdDirection) * M_PI_4 * cmdSpin;
 
             if (auto left = leftDrive.lock()) {
-                float leftPower = cmdPower + cmdSpin * dirmod;
+                float leftPower = cmdPower + dirmod;
                 left->setDrivePower(leftPower);
                 left->setSteer(cmdDirection + dirmod);
                 // left->setSteer(cmdDirection);
             }
             if (auto right = rightDrive.lock()) {
-                float rightPower = cmdPower - cmdSpin * dirmod;
+                float rightPower = cmdPower - dirmod;
                 right->setDrivePower(rightPower);
                 right->setSteer(cmdDirection - dirmod);
                 // right->setSteer(cmdDirection);
