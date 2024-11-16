@@ -48,7 +48,7 @@ namespace swerve {
         }
 
         void setSpin(double spin) {
-            cmdSpin = spin;
+            cmdSpin = std::clamp(spin, -1.0, 1.0);
         }
 
         double getPower() const {
@@ -56,7 +56,7 @@ namespace swerve {
         }
 
         void setPower(double power) {
-            cmdPower = power;
+            cmdPower = std::clamp(power, -1.0, 1.0);
         }
 
         double getDirection() const {
@@ -68,9 +68,9 @@ namespace swerve {
         }
 
         void drive(double power, double direction, double spin) {
-            cmdPower = power;
-            cmdDirection = direction;
-            cmdSpin = spin;
+            setPower(power);
+            setDirection(direction);
+            setSpin(spin);
         }
 
         json getTelemetry() const override {
@@ -160,21 +160,49 @@ namespace swerve {
         RCLCPP_SMART_PTR_DEFINITIONS(FullController)
 
     private:
-        void updateTarget() {
-            double dirmod = std::sin(cmdDirection) * M_PI_4 * cmdSpin;
+        double lerp(double t, double a, double b) {
+            return a + t * (b - a);
+        }
+
+        void driveTank() {
+            if (auto left = leftDrive.lock()) {
+                double leftPower = cmdPower - cmdSpin;
+                left->setDrivePower(leftPower);
+                double leftDirection = lerp(cmdSpin, cmdDirection, 0);
+                left->setSteer(leftDirection);
+            }
+
+            if (auto right = rightDrive.lock()) {
+                double rightPower = cmdPower + cmdSpin;
+                right->setDrivePower(rightPower);
+                double rightDirection = lerp(cmdSpin, cmdDirection, 0);
+                right->setSteer(rightDirection);
+            }
+        }
+
+        void driveBike() {
+            double dirmod = std::cos(cmdDirection) * cmdSpin;
+
+            double leftPower = cmdPower + cmdSpin;
+            double rightPower = cmdPower + cmdSpin;
+
+            double leftDirection = lerp(cmdSpin, cmdDirection, 0);
+            double rightDirection = lerp(cmdSpin, cmdDirection, M_PI);
 
             if (auto left = leftDrive.lock()) {
-                float leftPower = cmdPower + dirmod;
                 left->setDrivePower(leftPower);
-                left->setSteer(cmdDirection + dirmod);
-                // left->setSteer(cmdDirection);
+                left->setSteer(leftDirection);
             }
+
             if (auto right = rightDrive.lock()) {
-                float rightPower = cmdPower - dirmod;
                 right->setDrivePower(rightPower);
-                right->setSteer(cmdDirection - dirmod);
-                // right->setSteer(cmdDirection);
+                right->setSteer(rightDirection);
             }
+        }
+
+        void updateTarget() {
+            driveTank();
+            // driveBike();
         }
 
     public:
