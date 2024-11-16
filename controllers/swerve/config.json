@@ -12,8 +12,16 @@
         "port": 9870,
         "address": "0.0.0.0"
     },
-    "mission": "bike spin 2",
+    "mission": "complex",
     "missions": {
+        "complex": [
+            {
+                "power": 0.3,
+                "direction": 0,
+                "spin": 0.3,
+                "duration": 1.0
+            }
+        ],
         "bike drive": [
             {
                 "power": 0.0,

@@ -165,15 +165,23 @@ namespace swerve {
         }
 
         void driveTank() {
+            double leftPower = cmdPower;
+            double rightPower = cmdPower;
+
+            if (cmdSpin >= 0) {
+                leftPower = lerp(cmdSpin, cmdPower, -cmdPower);
+            }
+            else {
+                rightPower = lerp(-cmdSpin, cmdPower, -cmdPower);
+            }
+
             if (auto left = leftDrive.lock()) {
-                double leftPower = cmdPower - cmdSpin;
                 left->setDrivePower(leftPower);
                 double leftDirection = lerp(cmdSpin, cmdDirection, 0);
                 left->setSteer(leftDirection);
             }
 
             if (auto right = rightDrive.lock()) {
-                double rightPower = cmdPower + cmdSpin;
                 right->setDrivePower(rightPower);
                 double rightDirection = lerp(cmdSpin, cmdDirection, 0);
                 right->setSteer(rightDirection);
@@ -181,8 +189,6 @@ namespace swerve {
         }
 
         void driveBike() {
-            double dirmod = std::cos(cmdDirection) * cmdSpin;
-
             double leftPower = cmdPower;
             double rightPower = cmdPower;
 
@@ -200,9 +206,49 @@ namespace swerve {
             }
         }
 
+        void driveBoth() {
+            double tank_mod = std::sin(cmdDirection);
+
+            // double leftPower = lerp(tank_mod, cmdPower - cmdSpin, cmdPower);
+            // double rightPower = lerp(tank_mod, cmdPower + cmdSpin, cmdPower);
+
+            double leftPower = cmdPower;
+            double rightPower = cmdPower;
+
+            if (cmdSpin >= 0) {
+                leftPower = lerp(cmdSpin, cmdPower, -cmdPower);
+            }
+            else {
+                rightPower = lerp(-cmdSpin, cmdPower, -cmdPower);
+            }
+
+            double leftDirection;
+            double rightDirection;
+
+            if (cmdSpin >= 0) {
+                leftDirection = lerp(cmdSpin, cmdDirection, 0);
+                rightDirection = lerp(cmdSpin, cmdDirection, M_PI * 2);
+            }
+            else {
+                leftDirection = lerp(-cmdSpin, cmdDirection, M_PI * 2);
+                rightDirection = lerp(-cmdSpin, cmdDirection, 0);
+            }
+
+            if (auto left = leftDrive.lock()) {
+                left->setDrivePower(leftPower);
+                left->setSteer(leftDirection);
+            }
+
+            if (auto right = rightDrive.lock()) {
+                right->setDrivePower(rightPower);
+                right->setSteer(rightDirection);
+            }
+        }
+
         void updateTarget() {
             // driveTank();
-            driveBike();
+            // driveBike();
+            driveBoth();
         }
 
     public:
