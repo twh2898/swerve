@@ -183,8 +183,8 @@ namespace swerve {
         void driveBike() {
             double dirmod = std::cos(cmdDirection) * cmdSpin;
 
-            double leftPower = cmdPower + cmdSpin;
-            double rightPower = cmdPower + cmdSpin;
+            double leftPower = cmdPower;
+            double rightPower = cmdPower;
 
             double leftDirection = lerp(cmdSpin, cmdDirection, 0);
             double rightDirection = lerp(cmdSpin, cmdDirection, M_PI);
@@ -201,8 +201,8 @@ namespace swerve {
         }
 
         void updateTarget() {
-            driveTank();
-            // driveBike();
+            // driveTank();
+            driveBike();
         }
 
     public:
