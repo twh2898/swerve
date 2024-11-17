@@ -207,31 +207,60 @@ namespace swerve {
         }
 
         void driveBoth() {
-            double tank_mod = std::sin(cmdDirection);
-
-            // double leftPower = lerp(tank_mod, cmdPower - cmdSpin, cmdPower);
-            // double rightPower = lerp(tank_mod, cmdPower + cmdSpin, cmdPower);
+            double realDir = cmdDirection;
+            while (realDir < -M_PI) {
+                realDir += 2 * M_PI;
+            }
+            while (realDir > M_PI) {
+                realDir -= 2 * M_PI;
+            }
 
             double leftPower = cmdPower;
             double rightPower = cmdPower;
 
-            if (cmdSpin >= 0) {
-                leftPower = lerp(cmdSpin, cmdPower, -cmdPower);
+            double leftDirection = 0;
+            double rightDirection = 0;
+
+            if (realDir < -3 * M_PI_4) {
+                leftDirection = lerp(std::abs(cmdSpin), realDir, -M_PI);
+                rightDirection = lerp(std::abs(cmdSpin), realDir, -M_PI);
+
+                if (cmdSpin >= 0) {
+                    leftPower = lerp(cmdSpin, cmdPower, -cmdPower);
+                }
+                else {
+                    rightPower = lerp(-cmdSpin, cmdPower, -cmdPower);
+                }
+            }
+            else if (realDir < - M_PI_4) {
+                leftDirection = lerp(std::abs(cmdSpin), realDir, 0);
+                rightDirection = lerp(std::abs(cmdSpin), realDir, -M_PI);
+            }
+            else if (realDir < M_PI_4) {
+                leftDirection = lerp(std::abs(cmdSpin), realDir, 0);
+                rightDirection = lerp(std::abs(cmdSpin), realDir, 0);
+
+                if (cmdSpin >= 0) {
+                    leftPower = lerp(cmdSpin, cmdPower, -cmdPower);
+                }
+                else {
+                    rightPower = lerp(-cmdSpin, cmdPower, -cmdPower);
+                }
+            }
+            else if (realDir < 3 * M_PI_4) {
+                leftDirection = lerp(std::abs(cmdSpin), realDir, M_PI);
+                rightDirection = lerp(std::abs(cmdSpin), realDir, 0);
             }
             else {
-                rightPower = lerp(-cmdSpin, cmdPower, -cmdPower);
-            }
-
-            double leftDirection;
-            double rightDirection;
-
-            if (cmdSpin >= 0) {
-                leftDirection = lerp(cmdSpin, cmdDirection, 0);
-                rightDirection = lerp(cmdSpin, cmdDirection, M_PI * 2);
-            }
-            else {
-                leftDirection = lerp(-cmdSpin, cmdDirection, M_PI * 2);
-                rightDirection = lerp(-cmdSpin, cmdDirection, 0);
+                leftDirection = lerp(std::abs(cmdSpin), realDir, M_PI);
+                rightDirection = lerp(std::abs(cmdSpin), realDir, M_PI);
+                
+                if (cmdSpin >= 0) {
+                    leftPower = lerp(cmdSpin, cmdPower, -cmdPower);
+                }
+                else {
+                    rightPower = lerp(-cmdSpin, cmdPower, -cmdPower);
+                }
             }
 
             if (auto left = leftDrive.lock()) {
