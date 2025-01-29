@@ -20,8 +20,7 @@ namespace util {
     void Telemetry::send(json data) const {
         string message = data.dump();
         size_t message_length = message.length();
-        sendto(m_socket, message.c_str(), message_length, 0,
-               reinterpret_cast<const sockaddr *>(&m_addr), sizeof(m_addr));
+        sendto(m_socket, message.c_str(), message_length, 0, reinterpret_cast<const sockaddr *>(&m_addr), sizeof(m_addr));
     }
 
     void Telemetry::send(const TelemetrySender * sender) const {

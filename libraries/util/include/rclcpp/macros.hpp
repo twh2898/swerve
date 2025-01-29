@@ -29,9 +29,9 @@ Modifications:
  *
  * Use in the private section of the class.
  */
-#define RCLCPP_DISABLE_COPY(...) \
-  __VA_ARGS__(const __VA_ARGS__ &) = delete; \
-  __VA_ARGS__ & operator=(const __VA_ARGS__ &) = delete;
+#define RCLCPP_DISABLE_COPY(...)               \
+    __VA_ARGS__(const __VA_ARGS__ &) = delete; \
+    __VA_ARGS__ & operator=(const __VA_ARGS__ &) = delete;
 
 /**
  * Defines aliases and static functions for using the Class with smart pointers.
@@ -39,10 +39,10 @@ Modifications:
  * Use in the public section of the class.
  * Make sure to include `<memory>` in the header when using this.
  */
-#define RCLCPP_SMART_PTR_DEFINITIONS(...) \
-  RCLCPP_SHARED_PTR_DEFINITIONS(__VA_ARGS__) \
-  RCLCPP_WEAK_PTR_DEFINITIONS(__VA_ARGS__) \
-  RCLCPP_UNIQUE_PTR_DEFINITIONS(__VA_ARGS__)
+#define RCLCPP_SMART_PTR_DEFINITIONS(...)      \
+    RCLCPP_SHARED_PTR_DEFINITIONS(__VA_ARGS__) \
+    RCLCPP_WEAK_PTR_DEFINITIONS(__VA_ARGS__)   \
+    RCLCPP_UNIQUE_PTR_DEFINITIONS(__VA_ARGS__)
 
 /**
  * Defines aliases and static functions for using the Class with smart pointers.
@@ -55,9 +55,9 @@ Modifications:
  * Make sure to include `<memory>` in the header when using this.
  */
 #define RCLCPP_SMART_PTR_DEFINITIONS_NOT_COPYABLE(...) \
-  RCLCPP_SHARED_PTR_DEFINITIONS(__VA_ARGS__) \
-  RCLCPP_WEAK_PTR_DEFINITIONS(__VA_ARGS__) \
-  __RCLCPP_UNIQUE_PTR_ALIAS(__VA_ARGS__)
+    RCLCPP_SHARED_PTR_DEFINITIONS(__VA_ARGS__)         \
+    RCLCPP_WEAK_PTR_DEFINITIONS(__VA_ARGS__)           \
+    __RCLCPP_UNIQUE_PTR_ALIAS(__VA_ARGS__)
 
 /**
  * Defines aliases only for using the Class with smart pointers.
@@ -70,50 +70,48 @@ Modifications:
  * Make sure to include `<memory>` in the header when using this.
  */
 #define RCLCPP_SMART_PTR_ALIASES_ONLY(...) \
-  __RCLCPP_SHARED_PTR_ALIAS(__VA_ARGS__) \
-  __RCLCPP_WEAK_PTR_ALIAS(__VA_ARGS__) \
-  __RCLCPP_UNIQUE_PTR_ALIAS(__VA_ARGS__)
+    __RCLCPP_SHARED_PTR_ALIAS(__VA_ARGS__) \
+    __RCLCPP_WEAK_PTR_ALIAS(__VA_ARGS__)   \
+    __RCLCPP_UNIQUE_PTR_ALIAS(__VA_ARGS__)
 
-#define __RCLCPP_SHARED_PTR_ALIAS(...) \
-  using SharedPtr = std::shared_ptr<__VA_ARGS__>; \
-  using ConstSharedPtr = std::shared_ptr<const __VA_ARGS__>;
+#define __RCLCPP_SHARED_PTR_ALIAS(...)              \
+    using SharedPtr = std::shared_ptr<__VA_ARGS__>; \
+    using ConstSharedPtr = std::shared_ptr<const __VA_ARGS__>;
 
-#define __RCLCPP_MAKE_SHARED_DEFINITION(...) \
-  template<typename ... Args> \
-  static std::shared_ptr<__VA_ARGS__> \
-  make_shared(Args && ... args) \
-  { \
-    return std::make_shared<__VA_ARGS__>(std::forward<Args>(args) ...); \
-  }
+#define __RCLCPP_MAKE_SHARED_DEFINITION(...)                               \
+    template<typename... Args>                                             \
+    static std::shared_ptr<__VA_ARGS__>                                    \
+    make_shared(Args &&... args) {                                         \
+        return std::make_shared<__VA_ARGS__>(std::forward<Args>(args)...); \
+    }
 
 /// Defines aliases and static functions for using the Class with shared_ptrs.
 #define RCLCPP_SHARED_PTR_DEFINITIONS(...) \
-  __RCLCPP_SHARED_PTR_ALIAS(__VA_ARGS__) \
-  __RCLCPP_MAKE_SHARED_DEFINITION(__VA_ARGS__)
+    __RCLCPP_SHARED_PTR_ALIAS(__VA_ARGS__) \
+    __RCLCPP_MAKE_SHARED_DEFINITION(__VA_ARGS__)
 
-#define __RCLCPP_WEAK_PTR_ALIAS(...) \
-  using WeakPtr = std::weak_ptr<__VA_ARGS__>; \
-  using ConstWeakPtr = std::weak_ptr<const __VA_ARGS__>;
+#define __RCLCPP_WEAK_PTR_ALIAS(...)            \
+    using WeakPtr = std::weak_ptr<__VA_ARGS__>; \
+    using ConstWeakPtr = std::weak_ptr<const __VA_ARGS__>;
 
 /// Defines aliases and static functions for using the Class with weak_ptrs.
 #define RCLCPP_WEAK_PTR_DEFINITIONS(...) __RCLCPP_WEAK_PTR_ALIAS(__VA_ARGS__)
 
 #define __RCLCPP_UNIQUE_PTR_ALIAS(...) using UniquePtr = std::unique_ptr<__VA_ARGS__>;
 
-#define __RCLCPP_MAKE_UNIQUE_DEFINITION(...) \
-  template<typename ... Args> \
-  static std::unique_ptr<__VA_ARGS__> \
-  make_unique(Args && ... args) \
-  { \
-    return std::unique_ptr<__VA_ARGS__>(new __VA_ARGS__(std::forward<Args>(args) ...)); \
-  }
+#define __RCLCPP_MAKE_UNIQUE_DEFINITION(...)                                               \
+    template<typename... Args>                                                             \
+    static std::unique_ptr<__VA_ARGS__>                                                    \
+    make_unique(Args &&... args) {                                                         \
+        return std::unique_ptr<__VA_ARGS__>(new __VA_ARGS__(std::forward<Args>(args)...)); \
+    }
 
 /// Defines aliases and static functions for using the Class with unique_ptrs.
 #define RCLCPP_UNIQUE_PTR_DEFINITIONS(...) \
-  __RCLCPP_UNIQUE_PTR_ALIAS(__VA_ARGS__) \
-  __RCLCPP_MAKE_UNIQUE_DEFINITION(__VA_ARGS__)
+    __RCLCPP_UNIQUE_PTR_ALIAS(__VA_ARGS__) \
+    __RCLCPP_MAKE_UNIQUE_DEFINITION(__VA_ARGS__)
 
 #define RCLCPP_STRING_JOIN(arg1, arg2) RCLCPP_DO_STRING_JOIN(arg1, arg2)
-#define RCLCPP_DO_STRING_JOIN(arg1, arg2) arg1 ## arg2
+#define RCLCPP_DO_STRING_JOIN(arg1, arg2) arg1##arg2
 
-#endif  // RCLCPP__MACROS_HPP_
+#endif // RCLCPP__MACROS_HPP_

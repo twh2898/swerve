@@ -14,11 +14,14 @@ namespace util {
         double x;
         double y;
 
-        XY(double x = 0, double y = 0) : x(x), y(y) {}
+        XY(double x = 0, double y = 0)
+            : x(x), y(y) {}
 
-        XY(const XY & other) : x(other.x), y(other.y) {}
+        XY(const XY & other)
+            : x(other.x), y(other.y) {}
 
-        XY(XY && other) : x(other.x), y(other.y) {}
+        XY(XY && other)
+            : x(other.x), y(other.y) {}
 
         XY & operator=(const XY & other) {
             x = other.x;
