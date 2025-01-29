@@ -7,10 +7,10 @@ project(swerve
 
 set(WEBOTS_HOME "/usr/local/webots")
 
+add_subdirectory(external)
+
 link_directories(${WEBOTS_HOME}/lib/controller)
 include_directories(${WEBOTS_HOME}/include/controller/c ${WEBOTS_HOME}/include/controller/cpp)
-
-find_package(spdlog 1.14.1 REQUIRED)
 
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/libraries)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/controllers)
