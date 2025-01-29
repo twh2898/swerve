@@ -40,11 +40,6 @@ This library of components is used in each of the robot controllers found under
 
 ```plaintext
 controllers/
-├── 2wheel/
-│   ├── CMakeLists.txt
-│   ├── config.json
-│   ├── include/
-│   └── src/
 ├── CMakeLists.txt
 └── swerve/
     ├── CMakeLists.txt

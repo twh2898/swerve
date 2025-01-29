@@ -15,4 +15,7 @@ lint:
 format:
 	@$(CLANG_CMD) -i
 
+clean:
+	rm -rf build/ controllers/swerve/swerve controllers/swerve/swerve.log
+
 .PHONY: setup build lint format
