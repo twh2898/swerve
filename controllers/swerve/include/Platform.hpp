@@ -15,10 +15,10 @@
 #include "util/Telemetry.hpp"
 
 namespace swerve {
+    using base::MotorProfile;
+    using base::SwerveDrive;
     using std::string;
     using util::TelemetrySender;
-    using base::SwerveDrive;
-    using base::MotorProfile;
     using json = util::json;
 
     class Platform : public TelemetrySender {

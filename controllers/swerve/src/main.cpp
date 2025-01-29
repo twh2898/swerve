@@ -42,8 +42,9 @@ int main() {
 
     Platform::SharedPtr platform = Platform::make_shared(mProfile);
     int time_step = config.sim.step;
-    if (time_step < platform->robot.getBasicTimeStep())
+    if (time_step < platform->robot.getBasicTimeStep()) {
         time_step = platform->robot.getBasicTimeStep();
+    }
     platform->enable(time_step);
 
     platform->controller = FullController::make_shared(platform->leftDrive, platform->rightDrive);
@@ -74,8 +75,9 @@ int main() {
 
     clkSim->reset();
     while (platform->step(time_step) != -1) {
-        if (config.sim.stop > 0 && platform->robot.getTime() >= config.sim.stop)
+        if (config.sim.stop > 0 && platform->robot.getTime() >= config.sim.stop) {
             break;
+        }
 
         clkSim->tick();
 

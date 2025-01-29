@@ -31,8 +31,9 @@ namespace util {
     }
 
     double PID::calculate(double dt, double setPoint, double processValue) {
-        if (dt <= 0.0)
+        if (dt <= 0.0) {
             throw runtime_error("dt must be greater than 0");
+        }
 
         double error = setPoint - processValue;
         integral += error * dt;
@@ -45,10 +46,12 @@ namespace util {
         double output = P + I + D;
 
         if (useRange) {
-            if (output > max)
+            if (output > max) {
                 output = max;
-            else if (output < min)
+            }
+            else if (output < min) {
                 output = min;
+            }
         }
 
         return output;

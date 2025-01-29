@@ -4,11 +4,11 @@
 #include <ostream>
 
 namespace util {
-    using std::sin;
-    using std::cos;
     using std::atan2;
-    using std::sqrt;
+    using std::cos;
     using std::ostream;
+    using std::sin;
+    using std::sqrt;
 
     struct XY {
         double x;

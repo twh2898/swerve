@@ -11,10 +11,10 @@
 
 namespace swerve {
     using base::SwerveDrive;
-    using util::TelemetrySender;
+    using sim_time::now;
     using util::json;
     using util::Ramp;
-    using sim_time::now;
+    using util::TelemetrySender;
 
     class Controller : public TelemetrySender {
     public:

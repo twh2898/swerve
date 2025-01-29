@@ -9,8 +9,8 @@
 #include "util/ramp.hpp"
 
 namespace base {
-    using util::TelemetrySender;
     using util::Ramp;
+    using util::TelemetrySender;
     using json = util::json;
 
     struct MotorProfile {

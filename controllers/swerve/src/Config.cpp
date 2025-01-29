@@ -12,7 +12,6 @@
     if (!(data).contains(key))          \
         throw ConfigLoadException("Missing key: " prefix "." key);
 
-
 namespace util {
     using std::fstream;
 

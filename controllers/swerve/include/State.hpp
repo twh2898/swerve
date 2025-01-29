@@ -9,8 +9,8 @@
 #include "rclcpp/macros.hpp"
 
 namespace swerve {
-    using std::string;
     using std::map;
+    using std::string;
     using std::vector;
 
     class StateMachine;
