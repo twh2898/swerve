@@ -12,6 +12,16 @@ make setup
 make build
 ```
 
+### Lint / Format
+
+Use `make lint` to check formatting inconsistencies in the code. Use `make
+format` to fix these inconsistencies.
+
+```sh
+make lint
+make format
+```
+
 Open the world file using Webots `worlds/SwerveWorld.wbt`
 
 ## Development
