@@ -98,60 +98,21 @@ namespace swerve {
     public:
         RCLCPP_SMART_PTR_DEFINITIONS(TankController)
 
-    private:
-        Ramp lRamp;
-        Ramp rRamp;
-
-        void updateTarget() {
-            lRamp.setTarget(cmdPower - cmdSpin, now());
-            rRamp.setTarget(cmdPower + cmdSpin, now());
-        }
-
     public:
         TankController(const SwerveDrive::WeakPtr & leftDrive, const SwerveDrive::WeakPtr & rightDrive, double accel = 1.0)
-            : Controller(leftDrive, rightDrive),
-              lRamp(accel, now()),
-              rRamp(accel, now()) {}
+            : Controller(leftDrive, rightDrive) {}
 
         void update(double time) override {
-            updateTarget();
-
             if (auto left = leftDrive.lock()) {
-                left->setDrivePower(lRamp.getValue(time));
-                left->update(time);
+                left->setSteer(0);
+                left->setDrivePower(cmdPower - cmdSpin);
             }
-
             if (auto right = rightDrive.lock()) {
-                right->setDrivePower(rRamp.getValue(time));
-                right->update(time);
+                right->setSteer(0);
+                right->setDrivePower(cmdPower + cmdSpin);
             }
-        }
 
-        void setAccel(double accel) {
-            lRamp.setSlope(accel, sim_time::now());
-            rRamp.setSlope(accel, sim_time::now());
-        }
-
-        json getTelemetry() const override {
-            json data = Controller::getTelemetry();
-
-            data["leftRamp"] = {
-                {"start", lRamp.getStart()},
-                {"target", lRamp.getTarget()},
-                {"slope", lRamp.getSlope()},
-                {"value", lRamp.getValue(now())},
-                {"startTime", lRamp.getStartTime()},
-            };
-
-            data["rightRamp"] = {
-                {"start", rRamp.getStart()},
-                {"target", rRamp.getTarget()},
-                {"slope", rRamp.getSlope()},
-                {"value", rRamp.getValue(now())},
-                {"startTime", rRamp.getStartTime()},
-            };
-
-            return data;
+            Controller::update(time);
         }
     };
 
@@ -232,7 +193,7 @@ namespace swerve {
                     rightPower = lerp(-cmdSpin, cmdPower, -cmdPower);
                 }
             }
-            else if (realDir < - M_PI_4) {
+            else if (realDir < -M_PI_4) {
                 leftDirection = lerp(std::abs(cmdSpin), realDir, 0);
                 rightDirection = lerp(std::abs(cmdSpin), realDir, -M_PI);
             }
@@ -254,7 +215,7 @@ namespace swerve {
             else {
                 leftDirection = lerp(std::abs(cmdSpin), realDir, M_PI);
                 rightDirection = lerp(std::abs(cmdSpin), realDir, M_PI);
-                
+
                 if (cmdSpin >= 0) {
                     leftPower = lerp(cmdSpin, cmdPower, -cmdPower);
                 }
