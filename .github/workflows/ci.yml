@@ -40,17 +40,18 @@ jobs:
   lint:
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        path:
+          - controllers/swerve
+          - libraries/base
+          - libraries/util
+
     steps:
       - uses: actions/checkout@v4
 
-      - name: Lint src
+      - name: Lint code
         uses: jidicula/clang-format-action@v4.14.0
         with:
           clang-format-version: "18"
-          check-path: src
-
-      - name: Lint tests
-        uses: jidicula/clang-format-action@v4.14.0
-        with:
-          clang-format-version: "18"
-          check-path: tests/src
+          check-path: ${{ matrix.path }}
